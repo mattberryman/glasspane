@@ -4,11 +4,11 @@
 
 A browser teleprompter. Write a `.md` script, drop it onto the app, and read it during a live presentation. Auto-scroll, slide navigation, session timer, and stage direction cues are built in.
 
-**Hosted version:** [glasspane.workers.dev](https://glasspane.workers.dev)
+**Hosted version:** [glasspane.varadium-limited.workers.dev](https://glasspane.varadium-limited.workers.dev)
 
 ## Quickstart (hosted)
 
-1. Open [glasspane.workers.dev](https://glasspane.workers.dev).
+1. Open [glasspane.varadium-limited.workers.dev](https://glasspane.varadium-limited.workers.dev).
 2. Paste or upload your Markdown script.
 3. Share the link with any device on your speaker setup.
 
