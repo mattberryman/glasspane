@@ -917,7 +917,7 @@
           el.className = 'line';
           // DOMPurify sanitises the pre-processed HTML before DOM insertion
           var clean = DOMPurify.sanitize(block.html, {
-            ALLOWED_TAGS: ['span', 'em', 'strong'],
+            ALLOWED_TAGS: ['span'],
             ALLOWED_ATTR: ['class']
           });
           el.appendChild(createSanitisedFragment(clean));

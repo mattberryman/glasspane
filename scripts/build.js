@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -22,6 +23,16 @@ writeFileSync(resolve(root, "dist/teleprompter.html"), inlined, "utf8");
 const bytes = Buffer.byteLength(inlined, "utf8");
 console.log(`Built: dist/teleprompter.html (${bytes} bytes)`);
 
+// Compute SHA-256 hashes of all inline <script> blocks so the Worker can emit
+// a strict Content-Security-Policy without 'unsafe-inline'.
+const SCRIPT_BLOCK_RE = /<script>([\s\S]*?)<\/script>/g;
+const cspHashes = [];
+for (const match of inlined.matchAll(SCRIPT_BLOCK_RE)) {
+	const hash = createHash("sha256").update(match[1]).digest("base64");
+	cspHashes.push(`'sha256-${hash}'`);
+}
+const cspScriptHashes = cspHashes.join(" ");
+
 // Generate worker/src/template.ts so the Worker can import the HTML and demo
 // script as TypeScript modules (avoids HTML/MD module resolution issues in
 // Miniflare/vitest).
@@ -35,6 +46,7 @@ const templateTs =
 	`// Run \`npm run build\` to regenerate from teleprompter.html and guide.html.\n` +
 	`export const HTML = ${JSON.stringify(inlined)};\n` +
 	`export const DEMO_SCRIPT = ${JSON.stringify(demoScript)};\n` +
-	`export const GUIDE_HTML = ${JSON.stringify(guideHtml)};\n`;
+	`export const GUIDE_HTML = ${JSON.stringify(guideHtml)};\n` +
+	`export const CSP_SCRIPT_HASHES = ${JSON.stringify(cspScriptHashes)};\n`;
 writeFileSync(resolve(root, "worker/src/template.ts"), templateTs, "utf8");
 console.log("Generated: worker/src/template.ts");

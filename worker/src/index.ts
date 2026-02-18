@@ -1,6 +1,8 @@
 import { generateId } from "./id";
 import { UploadSchema } from "./schema";
-import { DEMO_SCRIPT, GUIDE_HTML, HTML } from "./template";
+import { CSP_SCRIPT_HASHES, DEMO_SCRIPT, GUIDE_HTML, HTML } from "./template";
+
+const CANONICAL_ORIGIN = "https://glasspane.page";
 
 export interface Env {
 	SCRIPTS: KVNamespace;
@@ -14,22 +16,22 @@ const CORS_HEADERS = {
 
 const CSP = [
 	"default-src 'self'",
-	// teleprompter.html uses two inline <script> blocks (DOMPurify + main IIFE).
-	// 'unsafe-inline' is needed because the HTML is static and adding a build-time
-	// hash would be a future improvement. All user content is sanitised by DOMPurify
-	// before DOM insertion, so this is defence-in-depth rather than the primary guard.
-	"script-src 'self' 'unsafe-inline'",
+	// Build-time SHA-256 hashes cover the two inline <script> blocks (DOMPurify +
+	// main IIFE), removing the need for 'unsafe-inline'.
+	`script-src 'self' ${CSP_SCRIPT_HASHES}`,
 	"style-src 'self' 'unsafe-inline'",
 	"connect-src 'self'",
 	"img-src 'self' data:",
 	"object-src 'none'",
 	"base-uri 'self'",
+	"frame-ancestors 'none'",
 ].join("; ");
 
 const SECURITY_HEADERS = {
 	"Content-Security-Policy": CSP,
 	"X-Content-Type-Options": "nosniff",
 	"X-Frame-Options": "DENY",
+	"Referrer-Policy": "strict-origin-when-cross-origin",
 };
 
 function serveHtml(scriptId: string | null): Response {
@@ -47,11 +49,24 @@ function serveHtml(scriptId: string | null): Response {
 	});
 }
 
-async function handleUpload(
-	request: Request,
-	env: Env,
-	origin: string,
-): Promise<Response> {
+// 90-day TTL — scripts auto-expire and are never stored indefinitely.
+const SCRIPT_TTL_SECONDS = 60 * 60 * 24 * 90;
+
+// Pre-parse body size cap: reject oversized payloads before attempting JSON.parse.
+const MAX_UPLOAD_BYTES = 200_000;
+
+async function handleUpload(request: Request, env: Env): Promise<Response> {
+	const contentLength = parseInt(
+		request.headers.get("Content-Length") ?? "0",
+		10,
+	);
+	if (contentLength > MAX_UPLOAD_BYTES) {
+		return new Response(JSON.stringify({ error: "Payload too large" }), {
+			status: 413,
+			headers: { "Content-Type": "application/json", ...CORS_HEADERS },
+		});
+	}
+
 	let body: unknown;
 	try {
 		body = await request.json();
@@ -74,12 +89,17 @@ async function handleUpload(
 	}
 
 	const id = generateId();
-	await env.SCRIPTS.put(id, result.data.content);
-
-	return new Response(JSON.stringify({ id, url: `${origin}/s/${id}` }), {
-		status: 200,
-		headers: { "Content-Type": "application/json", ...CORS_HEADERS },
+	await env.SCRIPTS.put(id, result.data.content, {
+		expirationTtl: SCRIPT_TTL_SECONDS,
 	});
+
+	return new Response(
+		JSON.stringify({ id, url: `${CANONICAL_ORIGIN}/s/${id}` }),
+		{
+			status: 200,
+			headers: { "Content-Type": "application/json", ...CORS_HEADERS },
+		},
+	);
 }
 
 async function handleGetScript(id: string, env: Env): Promise<Response> {
@@ -112,7 +132,7 @@ export default {
 		}
 
 		if (method === "POST" && pathname === "/upload") {
-			return await handleUpload(request, env, url.origin);
+			return await handleUpload(request, env);
 		}
 
 		const scriptMatch = pathname.match(SCRIPT_PATH_RE);
