@@ -816,6 +816,51 @@
   }
 
   // ============================================================
+  // TELEPROMPTER STATE (outer scope so loadNewBtn can reach them)
+  // ============================================================
+
+  var teleprompterInited = false;
+
+  // Mutable DOM collections — refreshed on each script load
+  var tpLines = [];
+  var tpSections = [];
+  var tpPips = [];
+
+  // Highlight
+  var activeIndex = -1;
+
+  // Timer
+  var timerRunning = false;
+  var timerStart = 0;
+  var timerInterval = null;
+
+  // Auto-scroll
+  var scrollActive = false;
+  var scrollLevel = 3; // 1-7, default 3
+  var scrollRAF = null;
+  var lastFrameTime = null;
+  var scrollAccumulator = 0;
+
+  var SPEED_LEVELS = [
+    { px: 12,  name: '1' },
+    { px: 18,  name: '2' },
+    { px: 27,  name: '3' },
+    { px: 40,  name: '4' },
+    { px: 60,  name: '5' },
+    { px: 90,  name: '6' },
+    { px: 135, name: '7' },
+  ];
+
+  // IntersectionObserver instance — disconnected and recreated per script load
+  var slideObserver = null;
+
+  // Forward-declared functions (assigned in initTeleprompter)
+  var stopScroll;
+  var startScroll;
+  var changeSpeed;
+  var setActive;
+
+  // ============================================================
   // RENDERER
   // ============================================================
 
@@ -888,9 +933,6 @@
       pip.title = slide.title || ('Slide ' + (index + 1));
       slideNav.appendChild(pip);
     });
-
-    // Initialise teleprompter interactions
-    initTeleprompter();
   }
 
   /**
@@ -913,6 +955,13 @@
     document.getElementById('drop-zone').style.display = 'none';
     document.getElementById('teleprompter').style.display = '';
     window.scrollTo(0, 0);
+
+    if (!teleprompterInited) {
+      initTeleprompter();
+      teleprompterInited = true;
+    } else {
+      refreshTeleprompter();
+    }
   }
 
   function handleFile(file) {
@@ -920,6 +969,7 @@
     reader.onload = function() {
       loadScript(reader.result);
     };
+    reader.onerror = function() { alert('Could not read file.'); };
     reader.readAsText(file);
   }
 
@@ -955,12 +1005,25 @@
   document.getElementById('demoLink').addEventListener('click', function(e) {
     e.preventDefault();
     fetch('./scripts/jfk-inaugural.md')
-      .then(function(r) { return r.text(); })
-      .then(function(text) { loadScript(text); });
+      .then(function(r) {
+        if (!r.ok) throw new Error('Demo script not found (' + r.status + ')');
+        return r.text();
+      })
+      .then(function(text) { loadScript(text); })
+      .catch(function(err) { alert('Could not load demo: ' + err.message); });
   });
 
   // Load new script button
   document.getElementById('loadNewBtn').addEventListener('click', function() {
+    // Stop auto-scroll if active
+    if (scrollActive && stopScroll) stopScroll();
+    // Stop timer if running
+    if (timerRunning) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timerRunning = false;
+    }
+
     document.getElementById('teleprompter').style.display = 'none';
     document.getElementById('drop-zone').style.display = '';
     var scriptContent = document.getElementById('scriptContent');
@@ -974,7 +1037,7 @@
     document.getElementById('settingsPanel').classList.remove('visible');
     // Reset progress
     document.getElementById('progressFill').style.width = '0%';
-    // Reset timer
+    // Reset timer display
     document.getElementById('timerDisplay').textContent = '00:00';
     document.getElementById('timer').classList.remove('running');
   });
@@ -983,8 +1046,18 @@
   var scriptId = document.body.dataset.scriptId;
   if (scriptId) {
     fetch('/script/' + scriptId)
-      .then(function(r) { return r.text(); })
-      .then(function(text) { loadScript(text); });
+      .then(function(r) {
+        if (!r.ok) throw new Error('Script not found');
+        return r.text();
+      })
+      .then(function(text) { loadScript(text); })
+      .catch(function() {
+        var dropTarget = document.getElementById('dropTarget');
+        var errMsg = document.createElement('div');
+        errMsg.style.cssText = 'color: var(--click); margin-top: 12px; font-size: 14px;';
+        errMsg.textContent = 'The shared script could not be found. It may have expired or been removed.';
+        dropTarget.parentNode.insertBefore(errMsg, dropTarget.nextSibling);
+      });
   }
 
   // ============================================================
@@ -992,11 +1065,59 @@
   // (Adapted from psd3-teleprompter.html — re-queries DOM after render)
   // ============================================================
 
+  /**
+   * refreshTeleprompter — re-queries DOM collections that change on each
+   * script load (lines, sections, pips) and reconnects the
+   * IntersectionObserver. Resets highlight and scroll state.
+   */
+  function refreshTeleprompter() {
+    tpLines = document.querySelectorAll('.line');
+    tpSections = document.querySelectorAll('.slide-section');
+    tpPips = document.querySelectorAll('.slide-pip');
+
+    // Reset state
+    activeIndex = -1;
+    if (scrollActive && stopScroll) stopScroll();
+
+    // Reconnect IntersectionObserver for new sections
+    if (slideObserver) slideObserver.disconnect();
+    slideObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var slideId = entry.target.id;
+          tpPips.forEach(function(p) {
+            p.classList.toggle('active', 'slide-' + p.dataset.slide === slideId);
+          });
+        }
+      });
+    }, { threshold: 0.3 });
+    tpSections.forEach(function(s) { slideObserver.observe(s); });
+
+    // Re-attach pip click listeners (pips are new DOM elements)
+    tpPips.forEach(function(pip) {
+      pip.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (scrollActive) stopScroll();
+        var section = document.getElementById('slide-' + pip.dataset.slide);
+        if (section) {
+          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          var firstLine = section.querySelector('.line');
+          if (firstLine) {
+            var idx = Array.from(tpLines).indexOf(firstLine);
+            if (idx >= 0) setActive(idx);
+          }
+        }
+      });
+    });
+  }
+
+  /**
+   * initTeleprompter — called exactly once on the first script load.
+   * Registers all global event listeners and performs the initial
+   * DOM query via refreshTeleprompter().
+   */
   function initTeleprompter() {
     var htmlEl = document.documentElement;
-    var lines = document.querySelectorAll('.line');
-    var sections = document.querySelectorAll('.slide-section');
-    var pips = document.querySelectorAll('.slide-pip');
     var timerEl = document.getElementById('timer');
     var timerDisplay = document.getElementById('timerDisplay');
     var progressFill = document.getElementById('progressFill');
@@ -1006,71 +1127,53 @@
     var scrollGlow = document.getElementById('scrollGlow');
     var mainContainer = document.getElementById('mainContainer');
 
-    // STATE
-    var activeIndex = -1;
-
-    // Timer
-    var timerRunning = false;
-    var timerStart = 0;
-    var timerInterval = null;
-
-    // Auto-scroll
-    var scrollActive = false;
-    var scrollLevel = 3; // 1-7, default 3
-    var scrollRAF = null;
-    var lastFrameTime = null;
-    var scrollAccumulator = 0; // accumulates sub-pixel fractions
-
-    var SPEED_LEVELS = [
-      { px: 12,  name: '1' },
-      { px: 18,  name: '2' },
-      { px: 27,  name: '3' },
-      { px: 40,  name: '4' },
-      { px: 60,  name: '5' },
-      { px: 90,  name: '6' },
-      { px: 135, name: '7' },
-    ];
-
     // HIGHLIGHT
-    function setActive(index) {
-      lines.forEach(function(l) { l.classList.remove('active'); });
-      if (index >= 0 && index < lines.length) {
+    setActive = function(index) {
+      tpLines.forEach(function(l) { l.classList.remove('active'); });
+      if (index >= 0 && index < tpLines.length) {
         activeIndex = index;
-        lines[index].classList.add('active');
+        tpLines[index].classList.add('active');
         updateProgress();
         updateSlidePips();
       }
-    }
+    };
 
     function updateProgress() {
-      var pct = ((activeIndex + 1) / lines.length) * 100;
+      var pct = ((activeIndex + 1) / tpLines.length) * 100;
       progressFill.style.width = pct + '%';
     }
 
     function updateSlidePips() {
       if (activeIndex < 0) return;
-      var section = lines[activeIndex].closest('.slide-section');
+      var section = tpLines[activeIndex].closest('.slide-section');
       if (!section) return;
       var slideId = section.id;
-      pips.forEach(function(p) {
+      tpPips.forEach(function(p) {
         p.classList.toggle('active', 'slide-' + p.dataset.slide === slideId);
       });
     }
 
     // AUTO-SCROLL
-    function startScroll() {
+    function updateSpeedDisplay() {
+      scrollDots.forEach(function(dot, i) {
+        dot.classList.toggle('filled', i < scrollLevel);
+      });
+      scrollSpeedName.textContent = SPEED_LEVELS[scrollLevel - 1].name;
+    }
+
+    startScroll = function() {
       if (scrollActive) return;
       scrollActive = true;
       lastFrameTime = null;
       scrollAccumulator = 0;
-      htmlEl.style.scrollBehavior = 'auto'; // disable CSS smooth-scroll during auto
+      htmlEl.style.scrollBehavior = 'auto';
       scrollIndicator.classList.add('visible');
       scrollGlow.classList.add('visible');
       updateSpeedDisplay();
       scrollRAF = requestAnimationFrame(scrollTick);
-    }
+    };
 
-    function stopScroll() {
+    stopScroll = function() {
       if (!scrollActive) return;
       scrollActive = false;
       htmlEl.style.scrollBehavior = 'smooth';
@@ -1081,7 +1184,7 @@
         scrollRAF = null;
       }
       lastFrameTime = null;
-    }
+    };
 
     function scrollTick(timestamp) {
       if (!scrollActive) return;
@@ -1089,13 +1192,12 @@
       if (lastFrameTime === null) {
         lastFrameTime = timestamp;
         scrollRAF = requestAnimationFrame(scrollTick);
-        return; // skip first frame to get a clean delta
+        return;
       }
 
-      var delta = (timestamp - lastFrameTime) / 1000; // seconds
+      var delta = (timestamp - lastFrameTime) / 1000;
       lastFrameTime = timestamp;
 
-      // Clamp delta to avoid jumps if tab was briefly hidden
       var clampedDelta = Math.min(delta, 0.1);
 
       var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
@@ -1107,7 +1209,6 @@
       var speed = SPEED_LEVELS[scrollLevel - 1].px;
       scrollAccumulator += speed * clampedDelta;
 
-      // Only scroll whole pixels — prevents browser rounding fractional values to zero
       var pixels = Math.floor(scrollAccumulator);
       if (pixels > 0) {
         scrollAccumulator -= pixels;
@@ -1117,23 +1218,18 @@
       scrollRAF = requestAnimationFrame(scrollTick);
     }
 
-    function changeSpeed(delta) {
+    changeSpeed = function(delta) {
       var newLevel = scrollLevel + delta;
       if (newLevel < 1 || newLevel > SPEED_LEVELS.length) return;
       scrollLevel = newLevel;
       updateSpeedDisplay();
-    }
+    };
 
-    function updateSpeedDisplay() {
-      scrollDots.forEach(function(dot, i) {
-        dot.classList.toggle('filled', i < scrollLevel);
-      });
-      scrollSpeedName.textContent = SPEED_LEVELS[scrollLevel - 1].name;
-    }
-
-    // KEYBOARD
+    // KEYBOARD (registered once)
     document.addEventListener('keydown', function(e) {
-      // Escape — always stops scroll; also closes settings panel
+      // Only respond when teleprompter is visible
+      if (document.getElementById('teleprompter').style.display === 'none') return;
+
       if (e.key === 'Escape') {
         if (scrollActive) {
           e.preventDefault();
@@ -1146,33 +1242,30 @@
         return;
       }
 
-      // Down arrow
       if (e.key === 'ArrowDown') {
         e.preventDefault();
         if (!scrollActive) {
           startScroll();
         } else {
-          changeSpeed(1); // faster
+          changeSpeed(1);
         }
         return;
       }
 
-      // Up arrow
       if (e.key === 'ArrowUp') {
         e.preventDefault();
         if (scrollActive) {
-          changeSpeed(-1); // slower
+          changeSpeed(-1);
         }
         return;
       }
 
-      // j/k — move highlight (works whether scrolling or not)
       if (e.key === 'j') {
         e.preventDefault();
-        var next = Math.min(activeIndex + 1, lines.length - 1);
+        var next = Math.min(activeIndex + 1, tpLines.length - 1);
         setActive(next);
         if (!scrollActive) {
-          lines[next].scrollIntoView({ behavior: 'smooth', block: 'center' });
+          tpLines[next].scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
         return;
       }
@@ -1181,67 +1274,49 @@
         var prev = Math.max(activeIndex - 1, 0);
         setActive(prev);
         if (!scrollActive) {
-          lines[prev].scrollIntoView({ behavior: 'smooth', block: 'center' });
+          tpLines[prev].scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
         return;
       }
     });
 
-    // CLICK — stop scroll OR highlight paragraph
+    // CLICK — stop scroll OR highlight paragraph (registered once on mainContainer)
     mainContainer.addEventListener('click', function(e) {
       if (scrollActive) {
-        // ANY click in the content area = STOP. No exceptions.
         stopScroll();
         return;
       }
 
-      // Normal mode: click to highlight
       var line = e.target.closest('.line');
       if (line) {
-        var idx = Array.from(lines).indexOf(line);
+        var idx = Array.from(tpLines).indexOf(line);
         if (idx >= 0) setActive(idx);
       }
     });
 
-    // Also stop on click outside container (body background)
+    // Also stop on click outside container (registered once)
     document.body.addEventListener('click', function(e) {
       if (scrollActive && !timerEl.contains(e.target) && !document.getElementById('slideNav').contains(e.target)) {
         stopScroll();
       }
-    }, true); // capture phase so it fires before other handlers
+    }, true);
 
-    // SCROLL WHEEL — stop auto-scroll if user manually scrolls
+    // SCROLL WHEEL (registered once)
     window.addEventListener('wheel', function() {
       if (scrollActive) stopScroll();
     }, { passive: true });
 
-    // WINDOW BLUR — stop if window loses focus
+    // WINDOW BLUR (registered once)
     window.addEventListener('blur', function() {
       if (scrollActive) stopScroll();
     });
 
-    // SLIDE PIPS — navigate (always stops auto-scroll)
-    pips.forEach(function(pip) {
-      pip.addEventListener('click', function(e) {
-        e.stopPropagation(); // don't trigger body click handler
-        if (scrollActive) stopScroll();
-        var section = document.getElementById('slide-' + pip.dataset.slide);
-        if (section) {
-          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          var firstLine = section.querySelector('.line');
-          if (firstLine) {
-            var idx = Array.from(lines).indexOf(firstLine);
-            setActive(idx);
-          }
-        }
-      });
-    });
-
-    // TIMER
+    // TIMER (registered once)
     timerEl.addEventListener('click', function(e) {
-      e.stopPropagation(); // don't trigger body click handler
+      e.stopPropagation();
       if (timerRunning) {
         clearInterval(timerInterval);
+        timerInterval = null;
         timerRunning = false;
         timerEl.classList.remove('running');
       } else {
@@ -1266,26 +1341,13 @@
 
     timerEl.addEventListener('dblclick', function() {
       clearInterval(timerInterval);
+      timerInterval = null;
       timerRunning = false;
       timerEl.classList.remove('running');
       timerDisplay.textContent = '00:00';
     });
 
-    // SCROLL-BASED SLIDE PIP UPDATE (passive observer)
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          var slideId = entry.target.id;
-          pips.forEach(function(p) {
-            p.classList.toggle('active', 'slide-' + p.dataset.slide === slideId);
-          });
-        }
-      });
-    }, { threshold: 0.3 });
-
-    sections.forEach(function(s) { observer.observe(s); });
-
-    // SCROLL-BASED PROGRESS (passive, updates during auto-scroll)
+    // SCROLL-BASED PROGRESS (registered once)
     window.addEventListener('scroll', function() {
       var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       if (maxScroll > 0) {
@@ -1293,6 +1355,9 @@
         progressFill.style.width = pct + '%';
       }
     }, { passive: true });
+
+    // Initial DOM query + IntersectionObserver setup
+    refreshTeleprompter();
   }
 
   // ============================================================
