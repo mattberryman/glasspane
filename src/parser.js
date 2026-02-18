@@ -25,7 +25,7 @@ export function parseScript(text) {
     // Block-level cue: line is *only* [TAG optional note]
     // The tag must begin with an uppercase word. After the all-caps keyword(s)
     // the rest is free-form note text (may include lowercase, punctuation, etc.).
-    const blockMatch = line.match(/^\[([A-Z][A-Z ]*(?:[\s\u2014\-.,!?].*)?)\]$/);
+    const blockMatch = line.match(/^\[([A-Z][A-Z ]*(?:[\u2014\-.,!?\s].*)?)\]$/);
     if (blockMatch) {
       const tag = blockMatch[1].trim();
       if (tag === 'CLICK') {
@@ -67,7 +67,7 @@ function processInline(text) {
   html = html.replace(/\*\*(.+?)\*\*/g, '<span class="slow">$1</span>');
 
   // 3. [ALL CAPS] inline direction — only matches all-caps content
-  html = html.replace(/\[([A-Z][A-Z0-9 ]*(?:[\u2014\-.,!?\s].*)?)\]/g, '<span class="d">[$1]</span>');
+  html = html.replace(/\[([A-Z][A-Z ]*(?:[\u2014\-.,!?\s].*)?)\]/g, '<span class="d">[$1]</span>');
 
   return html;
 }
