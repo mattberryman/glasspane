@@ -1,0 +1,371 @@
+/* ============================================================
+     THEMES
+     ============================================================ */
+
+[data-theme="night"] {
+	--bg: #0c0c0e;
+	--text: #d8d8dc;
+	--text-dim: #8a8a92;
+	--surface: #16161a;
+	--border: #222;
+	--code-bg: #1c1c22;
+}
+
+[data-theme="day"] {
+	--bg: #f8f7f4;
+	--text: #1a1a1a;
+	--text-dim: #6e6e6e;
+	--surface: #eeedea;
+	--border: #d8d7d4;
+	--code-bg: #e0dfdc;
+}
+
+@media (prefers-color-scheme: dark) {
+	[data-theme="auto"] {
+		--bg: #0c0c0e;
+		--text: #d8d8dc;
+		--text-dim: #8a8a92;
+		--surface: #16161a;
+		--border: #222;
+		--code-bg: #1c1c22;
+	}
+}
+@media (prefers-color-scheme: light) {
+	[data-theme="auto"] {
+		--bg: #f8f7f4;
+		--text: #1a1a1a;
+		--text-dim: #6e6e6e;
+		--surface: #eeedea;
+		--border: #d8d7d4;
+		--code-bg: #e0dfdc;
+	}
+}
+
+/* ============================================================
+     ACCENTS
+     ============================================================ */
+
+[data-accent="gold"] {
+	--accent: #c9a84c;
+	--slow-color: #f0c060;
+}
+
+[data-accent="teal"] {
+	--accent: #3dbfa8;
+	--slow-color: #5dd8c0;
+}
+
+/* ============================================================
+     RESET & BASE
+     ============================================================ */
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html {
+	scrollbar-width: thin;
+	scrollbar-color: #333 var(--bg);
+}
+
+body {
+	background: var(--bg);
+	color: var(--text);
+	font-family:
+		-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+	font-size: 17px;
+	line-height: 1.7;
+	-webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+     LAYOUT
+     ============================================================ */
+
+.site-header {
+	border-bottom: 1px solid var(--border);
+	padding: 14px 24px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	position: sticky;
+	top: 0;
+	background: var(--bg);
+	z-index: 10;
+}
+
+.site-header .brand {
+	display: flex;
+	align-items: baseline;
+	gap: 10px;
+	text-decoration: none;
+	color: var(--text);
+}
+
+.site-header .brand-name {
+	font-size: 16px;
+	font-weight: 600;
+	letter-spacing: -0.01em;
+}
+
+.site-header .brand-sub {
+	font-size: 13px;
+	color: var(--text-dim);
+}
+
+.back-link {
+	font-size: 13px;
+	color: var(--accent);
+	text-decoration: none;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	white-space: nowrap;
+}
+
+.back-link:hover {
+	text-decoration: underline;
+}
+
+main {
+	max-width: 720px;
+	margin: 0 auto;
+	padding: 48px 24px 96px;
+}
+
+/* ============================================================
+     TYPOGRAPHY
+     ============================================================ */
+
+h1 {
+	font-size: 28px;
+	font-weight: 700;
+	letter-spacing: -0.03em;
+	line-height: 1.2;
+	margin-bottom: 16px;
+	color: var(--text);
+}
+
+h2 {
+	font-size: 20px;
+	font-weight: 600;
+	letter-spacing: -0.02em;
+	margin-top: 48px;
+	margin-bottom: 14px;
+	color: var(--text);
+	padding-bottom: 8px;
+	border-bottom: 1px solid var(--border);
+}
+
+h3 {
+	font-size: 15px;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--accent);
+	margin-top: 28px;
+	margin-bottom: 12px;
+}
+
+p {
+	color: var(--text);
+	margin-bottom: 16px;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+
+a {
+	color: var(--accent);
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+hr {
+	border: none;
+	border-top: 1px solid var(--border);
+	margin: 40px 0;
+}
+
+/* ============================================================
+     CODE
+     ============================================================ */
+
+code {
+	font-family: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace;
+	font-size: 0.85em;
+	background: var(--code-bg);
+	padding: 2px 6px;
+	border-radius: 4px;
+	color: var(--accent);
+}
+
+pre {
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	padding: 18px 20px;
+	overflow-x: auto;
+	margin: 20px 0;
+	font-family: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace;
+	font-size: 13.5px;
+	line-height: 1.65;
+	color: var(--text);
+}
+
+pre code {
+	background: none;
+	padding: 0;
+	font-size: inherit;
+	color: inherit;
+	border-radius: 0;
+}
+
+/* ============================================================
+     TABLES
+     ============================================================ */
+
+.table-wrap {
+	overflow-x: auto;
+	margin: 20px 0;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 15px;
+}
+
+th {
+	text-align: left;
+	padding: 9px 14px;
+	background: var(--surface);
+	color: var(--text-dim);
+	font-weight: 600;
+	font-size: 12px;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	border-bottom: 1px solid var(--border);
+}
+
+td {
+	padding: 9px 14px;
+	border-bottom: 1px solid var(--border);
+	vertical-align: top;
+}
+
+tr:last-child td {
+	border-bottom: none;
+}
+
+td code {
+	white-space: nowrap;
+}
+
+/* ============================================================
+     INTRO CALLOUT
+     ============================================================ */
+
+.intro {
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-left: 3px solid var(--accent);
+	border-radius: 0 8px 8px 0;
+	padding: 16px 20px;
+	margin-bottom: 32px;
+	color: var(--text-dim);
+	font-size: 15px;
+	line-height: 1.6;
+}
+
+.intro a {
+	color: var(--accent);
+}
+
+/* ============================================================
+     INLINE DEMO PILLS (showing what things look like on screen)
+     ============================================================ */
+
+.demo-line {
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	padding: 14px 18px;
+	margin: 16px 0;
+	font-size: 15px;
+	line-height: 1.7;
+	color: var(--text);
+}
+
+.demo-line .d {
+	display: inline-block;
+	font-size: 10px;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--accent);
+	border: 1px solid var(--accent);
+	border-radius: 3px;
+	padding: 1px 5px;
+	margin: 0 2px;
+	vertical-align: middle;
+	opacity: 0.85;
+}
+
+.demo-line .slow {
+	color: var(--slow-color);
+}
+
+.demo-line .click-pill {
+	display: inline-block;
+	font-size: 10px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	background: #e05a4022;
+	color: #e05a40;
+	border: 1px solid #e05a4066;
+	border-radius: 3px;
+	padding: 1px 7px;
+}
+
+.demo-line .pause-block {
+	font-size: 13px;
+	color: var(--text-dim);
+	font-style: italic;
+}
+
+.demo-line .note-block {
+	font-size: 13px;
+	color: var(--text-dim);
+	font-style: italic;
+	opacity: 0.75;
+}
+
+/* ============================================================
+     RESPONSIVE
+     ============================================================ */
+
+@media (max-width: 600px) {
+	main {
+		padding: 32px 16px 64px;
+	}
+	h1 {
+		font-size: 24px;
+	}
+	h2 {
+		font-size: 18px;
+		margin-top: 36px;
+	}
+	pre {
+		font-size: 12px;
+		padding: 14px 16px;
+	}
+}

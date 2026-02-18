@@ -19,19 +19,20 @@ No account required. Scripts expire after 24 hours.
 Scripts are plain Markdown files. Use `##` headings for slide boundaries, `**bold**` for slow emphasis, and `[TAGS]` for stage directions.
 
 ```markdown
-## Opening
+## Opening — Inaugural Address
 
-Good morning, everyone. [SMILE]
+Vice President Johnson, Mr. Speaker, Mr. Chief Justice, fellow citizens: [BREATHE]
 
-**Thank you for being here.**
+**We dare not forget today that we are the heirs of that first revolution.** [BREATHE]
 
-[PAUSE -- let the applause settle]
+[PAUSE — let this declaration resonate]
 
 [CLICK]
 
-## The Problem
+## Pledges to the World
 
-Last year we lost forty per cent of our customers.
+To those old allies whose cultural and spiritual origins we share, [BREATHE]
+we pledge the loyalty of faithful friends.
 ```
 
 Full details in [docs/script-format.md](docs/script-format.md).
@@ -55,6 +56,8 @@ Full details in [docs/script-format.md](docs/script-format.md).
 npm install
 npm run build
 ```
+
+Source files live in `src/` — assembled by the build step into the self-contained `dist/teleprompter.html`.
 
 Open `dist/teleprompter.html` directly in a browser. Drag a `.md` file onto it. No server required.
 

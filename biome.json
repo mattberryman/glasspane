@@ -7,7 +7,9 @@
       "scripts/**",
       "worker/src/**",
       "worker/tests/**",
-      "!!worker/src/template.ts"
+      "!!worker/src/template.ts",
+      "!!src/teleprompter.html",
+      "!!src/guide.html"
     ]
   },
   "linter": {
@@ -80,6 +82,10 @@
           }
         }
       }
+    },
+    {
+      "includes": ["src/app.js"],
+      "linter": { "enabled": false }
     }
   ],
   "javascript": {

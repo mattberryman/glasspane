@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="night" data-accent="gold">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Script Format — Glasspane</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙</text></svg>">
+<style><!-- INJECT:CSS --></style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="brand" href="/">
+    <span class="brand-name">🎙 Glasspane</span>
+    <span class="brand-sub">Script format guide</span>
+  </a>
+  <a class="back-link" href="/">← Back to app</a>
+</header>
+
+<main>
+
+  <h1>Script Format</h1>
+
+  <div class="intro">
+    Glasspane reads plain <code>.md</code> (Markdown) files. Write what you want to say, add a few annotations for delivery, and drop the file into the app. No special software required — any text editor works.<br><br>
+    In a hurry? Jump to the <a href="#cheat-sheet">Cheat Sheet</a>.
+  </div>
+
+  <!-- ============================================================ -->
+  <h2>Slide boundaries</h2>
+
+  <p>Start each new slide with a <code>##</code> heading. The heading text appears on screen as a section title.</p>
+
+  <pre><code>## Opening — Inaugural Address
+
+Vice President Johnson, Mr. Speaker, Mr. Chief Justice, fellow citizens:
+
+## Pledges to the World
+
+To those old allies whose cultural and spiritual origins we share,
+we pledge the loyalty of faithful friends.</code></pre>
+
+  <p>Everything after a <code>##</code> heading belongs to that slide until the next <code>##</code> heading. If your script has no headings, Glasspane treats the entire file as one slide.</p>
+
+  <!-- ============================================================ -->
+  <h2>Spoken lines</h2>
+
+  <p>Every plain paragraph becomes a line on the teleprompter. Write one thought per paragraph. Glasspane highlights each line as you speak, so shorter paragraphs are easier to follow at a glance.</p>
+
+  <pre><code>We observe today not a victory of party but a celebration of freedom.
+
+For I have sworn before you and Almighty God the same solemn oath
+our forebears prescribed nearly a century and three-quarters ago.
+
+The world is very different now.</code></pre>
+
+  <p>Blank lines between paragraphs are ignored — use them freely to keep your file readable.</p>
+
+  <!-- ============================================================ -->
+  <h2>Inline directions</h2>
+
+  <p>Place a tag in square brackets anywhere inside a spoken line. The tag appears on screen as a small accent-coloured label. The audience never sees it — it is only on your teleprompter.</p>
+
+  <pre><code>Vice President Johnson, Mr. Speaker, Mr. Chief Justice, fellow citizens: [BREATHE]</code></pre>
+
+  <p>On screen that line looks like this:</p>
+
+  <div class="demo-line">
+    Vice President Johnson, Mr. Speaker, Mr. Chief Justice, fellow citizens: <span class="d">BREATHE</span>
+  </div>
+
+  <h3>Common tags</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Tag</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>[BREATHE]</code></td><td>Take a breath before continuing</td></tr>
+        <tr><td><code>[PAUSE]</code></td><td>Brief pause for effect</td></tr>
+        <tr><td><code>[SLOW]</code></td><td>Slow your pace for the next phrase</td></tr>
+        <tr><td><code>[LOOK UP]</code></td><td>Make eye contact with the audience</td></tr>
+        <tr><td><code>[SMILE]</code></td><td>Smile — it changes your vocal tone</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Making up your own</h3>
+
+  <p>Any text in square brackets written in ALL CAPS is treated as a direction. Use whatever works for you:</p>
+
+  <pre><code>We exceeded every target. [FIST PUMP]
+
+And we did it together. [GESTURE TO AUDIENCE]</code></pre>
+
+  <!-- ============================================================ -->
+  <h2>Slow emphasis</h2>
+
+  <p>Wrap a word or phrase in double asterisks to mark it for slow, deliberate delivery. On the teleprompter the text appears in a distinct colour so you know to slow down.</p>
+
+  <pre><code>Let us never negotiate out of fear. **But let us never fear to negotiate.**</code></pre>
+
+  <p>On screen that line looks like this:</p>
+
+  <div class="demo-line">
+    Let us never negotiate out of fear. <span class="slow">But let us never fear to negotiate.</span>
+  </div>
+
+  <p>Use slow emphasis sparingly. If everything is emphasised, nothing is.</p>
+
+  <!-- ============================================================ -->
+  <h2>Block-level cues</h2>
+
+  <p>A block-level cue sits on its own line — it is not part of a spoken sentence. It tells you to do something between lines of speech. There are three kinds.</p>
+
+  <h3>Click cue</h3>
+
+  <pre><code>[CLICK]</code></pre>
+
+  <p>Signals that you should advance your presentation slide. On the teleprompter it appears as a small highlighted pill:</p>
+
+  <div class="demo-line"><span class="click-pill">CLICK</span></div>
+
+  <h3>Pause block</h3>
+
+  <pre><code>[PAUSE — let the formalities settle. Survey the crowd.]</code></pre>
+
+  <p>A pause with an optional note to yourself. The double dash (<code>--</code>) separates the tag from the note. On screen:</p>
+
+  <div class="demo-line"><span class="pause-block">[PAUSE — let the formalities settle. Survey the crowd.]</span></div>
+
+  <p>A bare <code>[PAUSE]</code> on its own line works the same way without the note.</p>
+
+  <h3>Presenter note</h3>
+
+  <pre><code>[NOTE — 20 January 1961. Washington, D.C. Speak slowly — your breath will be visible in the cold air.]</code></pre>
+
+  <p>A note visible only to you. Use it for reminders that are not part of your speech:</p>
+
+  <div class="demo-line"><span class="note-block">[20 January 1961. Washington, D.C. Speak slowly — your breath will be visible in the cold air.]</span></div>
+
+  <h3>Inline vs block</h3>
+
+  <p>The same tag can be inline or block depending on where you place it. If it is the only thing on the line it becomes a standalone block element. If it sits inside a sentence alongside other words it becomes an inline direction attached to that line.</p>
+
+  <pre><code>Let us never negotiate out of fear. [PAUSE]    ← inline: pause cue sits beside the sentence
+
+[PAUSE — let the opening land]                 ← block: pause stands alone between lines
+
+[CLICK]                                        ← block: advance your slide
+
+fellow citizens: [BREATHE]                     ← inline: breathe cue sits beside the sentence</code></pre>
+
+  <!-- ============================================================ -->
+  <h2>Slide dividers</h2>
+
+  <p>Glasspane automatically inserts a visual divider between slides. You do not need to add anything yourself — the <code>##</code> headings handle it.</p>
+
+  <p>For an extra visual break <em>within</em> a slide, insert a horizontal rule:</p>
+
+  <pre><code>---</code></pre>
+
+  <p>This adds a thin line across the teleprompter at that point.</p>
+
+  <!-- ============================================================ -->
+  <h2 id="cheat-sheet">Cheat sheet</h2>
+
+  <h3>Structure</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Syntax</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td><code>## Heading text</code></td><td>Starts a new slide section</td></tr>
+        <tr><td>Plain paragraph</td><td>A spoken line on the teleprompter</td></tr>
+        <tr><td>Blank line</td><td>Ignored — use freely for readability</td></tr>
+        <tr><td><code>---</code></td><td>Horizontal divider within a slide</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Inline directions (inside a spoken line)</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Syntax</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td><code>[BREATHE]</code></td><td>Breath cue</td></tr>
+        <tr><td><code>[PAUSE]</code></td><td>Brief pause</td></tr>
+        <tr><td><code>[SLOW]</code></td><td>Slow your pace</td></tr>
+        <tr><td><code>[LOOK UP]</code></td><td>Make eye contact</td></tr>
+        <tr><td><code>[SMILE]</code></td><td>Smile</td></tr>
+        <tr><td><code>[ANY CAPS]</code></td><td>Custom direction — any all-caps text works</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Slow emphasis (inside a spoken line)</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Syntax</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td><code>**words**</code></td><td>Gold text — speak slowly and deliberately</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Block-level cues (alone on a line)</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Syntax</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td><code>[CLICK]</code></td><td>Advance your presentation slide</td></tr>
+        <tr><td><code>[PAUSE]</code></td><td>Standalone pause</td></tr>
+        <tr><td><code>[PAUSE -- note]</code></td><td>Pause with a reminder to yourself</td></tr>
+        <tr><td><code>[NOTE -- text]</code></td><td>Presenter note (not spoken)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ============================================================ -->
+  <h2>Annotated example</h2>
+
+  <p>A short script that uses every feature. Each line has a comment explaining what it does.</p>
+
+  <pre><code>## Opening — Inaugural Address                  &lt;!-- slide boundary: starts slide 1 --&gt;
+
+[NOTE — 20 January 1961. Speak slowly.]         &lt;!-- block-level presenter note --&gt;
+
+[CLICK]                                         &lt;!-- block-level click cue --&gt;
+
+Vice President Johnson, Mr. Speaker,            &lt;!-- spoken line --&gt;
+Mr. Chief Justice, fellow citizens: [BREATHE]   &lt;!-- inline direction --&gt;
+
+[PAUSE — let the formalities settle.]           &lt;!-- block-level pause with note --&gt;
+
+We observe today not a victory of party         &lt;!-- spoken line --&gt;
+but a celebration of freedom.
+
+**We dare not forget today that we are          &lt;!-- spoken line with slow emphasis --&gt;
+the heirs of that first revolution.** [BREATHE]
+
+---                                             &lt;!-- visual divider within the slide --&gt;
+
+## A Call to Negotiate                          &lt;!-- slide boundary: starts slide 2 --&gt;
+
+[CLICK]                                         &lt;!-- block-level click cue --&gt;
+
+Let us never negotiate out of fear. [BREATHE]   &lt;!-- spoken line with inline direction --&gt;
+
+**But let us never fear to negotiate.**         &lt;!-- spoken line with slow emphasis --&gt;
+
+[PAUSE — 4 seconds. One of the most quoted lines. Let it breathe fully.]
+                                                &lt;!-- block-level pause with note --&gt;
+
+**Ask not what your country can do for you** — &lt;!-- spoken line with slow emphasis --&gt;
+
+ask what you can do for your country. [LOOK UP] &lt;!-- inline direction --&gt;</code></pre>
+
+  <p>Copy this into a <code>.md</code> file, drop it into Glasspane, and you will see every element rendered on the teleprompter.</p>
+
+</main>
+
+</body>
+</html>
