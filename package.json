@@ -7,11 +7,11 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "build": "node scripts/build.js",
-    "lint": "eslint src tests"
+    "lint": "biome check src tests scripts worker/src worker/tests"
   },
   "devDependencies": {
-    "vitest": "^2.0.0",
+    "@biomejs/biome": "^2.4.2",
     "dompurify": "^3.0.0",
-    "eslint": "^9.0.0"
+    "vitest": "^2.0.0"
   }
 }

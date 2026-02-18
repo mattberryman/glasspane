@@ -23,6 +23,9 @@ jobs:
         run: npm ci
         working-directory: worker
 
+      - name: Lint
+        run: npm run lint
+
       - name: Build dist (generates worker/src/template.ts)
         run: npm run build
 
