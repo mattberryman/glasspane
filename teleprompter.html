@@ -954,6 +954,7 @@
     var slides = parseScript(text);
     renderScript(slides);
     document.getElementById('drop-zone').style.display = 'none';
+    document.getElementById('fileInput').disabled = true;
     document.getElementById('teleprompter').style.display = '';
     window.scrollTo(0, 0);
 
@@ -1027,6 +1028,7 @@
 
     document.getElementById('teleprompter').style.display = 'none';
     document.getElementById('drop-zone').style.display = '';
+    document.getElementById('fileInput').disabled = false;
     var scriptContent = document.getElementById('scriptContent');
     while (scriptContent.firstChild) {
       scriptContent.removeChild(scriptContent.firstChild);
