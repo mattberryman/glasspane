@@ -13,7 +13,9 @@ const CORS_HEADERS = {
 
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  // NOTE: Task 8 must add a 'nonce-{value}' or hash to allow the teleprompter's inline <script> block.
+  // 'unsafe-inline' is intentionally excluded here.
+  "script-src 'self'",
   "style-src 'self' 'unsafe-inline'",
   "connect-src 'self'",
   "img-src 'self' data:",
@@ -80,7 +82,10 @@ async function handleUpload(request: Request, env: Env, origin: string): Promise
 async function handleGetScript(id: string, env: Env): Promise<Response> {
   const content = await env.SCRIPTS.get(id);
   if (content === null) {
-    return new Response('Script not found', { status: 404 });
+    return new Response(JSON.stringify({ error: 'Script not found' }), {
+      status: 404,
+      headers: { 'Content-Type': 'application/json', ...CORS_HEADERS },
+    });
   }
   return new Response(content, {
     headers: {
@@ -97,7 +102,7 @@ export default {
     const method = request.method;
 
     if (method === 'OPTIONS') {
-      return new Response(null, { headers: CORS_HEADERS });
+      return new Response(null, { status: 204, headers: CORS_HEADERS });
     }
 
     if (method === 'POST' && pathname === '/upload') {
