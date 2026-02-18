@@ -11,13 +11,14 @@ This document explains every feature of the format. If you just want the short v
 Start each new slide with a `##` heading. The heading text appears on screen as a section title.
 
 ```markdown
-## Opening
+## Opening — Inaugural Address
 
-Good morning. Thank you for being here.
+Vice President Johnson, Mr. Speaker, Mr. Chief Justice, fellow citizens:
 
-## The Problem
+## Pledges to the World
 
-Last year we lost forty per cent of our customers.
+To those old allies whose cultural and spiritual origins we share,
+we pledge the loyalty of faithful friends.
 ```
 
 Everything after a `##` heading belongs to that slide until the next `##` heading appears.
@@ -31,11 +32,12 @@ If your script has no `##` headings, Glasspane treats the entire file as one sli
 Every plain paragraph becomes a line on the teleprompter. Write one thought per paragraph. Glasspane highlights each line as you move through the script, so shorter paragraphs are easier to follow at a glance.
 
 ```markdown
-We need to talk about what went wrong.
+We observe today not a victory of party but a celebration of freedom.
 
-The data is clear.
+For I have sworn before you and Almighty God the same solemn oath
+our forebears prescribed nearly a century and three-quarters ago.
 
-Our response time doubled and our customers noticed.
+The world is very different now.
 ```
 
 Blank lines between paragraphs are ignored -- use them freely to keep your file readable.
@@ -47,7 +49,7 @@ Blank lines between paragraphs are ignored -- use them freely to keep your file 
 Place a tag in square brackets anywhere inside a spoken line to give yourself a stage direction. The tag appears on screen in a small accent-coloured label beside your words. The audience never sees it -- it is only on your teleprompter.
 
 ```markdown
-We shall fight on the beaches. [BREATHE] We shall fight on the landing grounds.
+Vice President Johnson, Mr. Speaker, Mr. Chief Justice, fellow citizens: [BREATHE]
 ```
 
 On screen, the sentence reads normally and `[BREATHE]` appears as a small coloured cue next to the text.
@@ -81,10 +83,10 @@ Tags are case-insensitive, but the convention is ALL CAPS so they stand out in y
 Wrap a word or phrase in double asterisks to mark it for slow, deliberate delivery. On the teleprompter, the text appears in a distinct colour (gold by default) so you know to slow down.
 
 ```markdown
-This is not a minor issue. **This is a crisis.**
+Let us never negotiate out of fear. **But let us never fear to negotiate.**
 ```
 
-On screen, "This is a crisis." appears in gold while the rest of the sentence stays in the normal text colour.
+On screen, "But let us never fear to negotiate." appears in gold while the rest of the sentence stays in the normal text colour.
 
 Use slow emphasis sparingly. If everything is emphasised, nothing is.
 
@@ -107,7 +109,7 @@ Signals that you should advance your presentation slide (click the clicker, pres
 ### Pause block
 
 ```markdown
-[PAUSE -- let this land. 4-5 seconds.]
+[PAUSE — let the formalities settle. Survey the crowd.]
 ```
 
 A pause with an optional note to yourself. The note appears in small italic text on screen. The double dash (`--`) separates the tag from the note.
@@ -121,7 +123,7 @@ Without a note, a standalone `[PAUSE]` on its own line works the same way:
 ### Presenter note
 
 ```markdown
-[NOTE -- refer to the chart on screen]
+[NOTE — 20 January 1961. Washington, D.C. Speak slowly — your breath will be visible in the cold air.]
 ```
 
 A note visible only to you on the teleprompter. Use it for reminders that are not part of your speech.
@@ -131,13 +133,13 @@ A note visible only to you on the teleprompter. Use it for reminders that are no
 The difference is placement. If the tag is the only thing on the line, it becomes a block-level cue -- a standalone element between spoken lines. If the tag sits inside a sentence alongside other words, it becomes an inline direction attached to that line.
 
 ```markdown
-We need to act now. [PAUSE]        <-- inline: the pause cue sits beside the sentence
+Let us never negotiate out of fear. [PAUSE]    <-- inline: pause cue sits beside the sentence
 
-[PAUSE -- three seconds]           <-- block: the pause stands alone between lines
+[PAUSE — let the opening land]                 <-- block: pause stands alone between lines
 
-[CLICK]                            <-- block: advance your slide
+[CLICK]                                        <-- block: advance your slide
 
-And here is our plan. [BREATHE]    <-- inline: breathe cue sits beside the sentence
+fellow citizens: [BREATHE]                     <-- inline: breathe cue sits beside the sentence
 ```
 
 ---
@@ -202,38 +204,39 @@ A one-page summary of everything above.
 Below is a short script that uses every feature. Each line has a comment explaining what it does.
 
 ````markdown
-## Welcome                              <!-- slide boundary: starts slide 1 -->
+## Opening — Inaugural Address                  <!-- slide boundary: starts slide 1 -->
 
-Good evening, everyone. [SMILE]         <!-- spoken line with inline direction -->
+[NOTE — 20 January 1961. Speak slowly.]         <!-- block-level presenter note -->
 
-**Thank you for being here tonight.**   <!-- spoken line with slow emphasis -->
+[CLICK]                                         <!-- block-level click cue -->
 
-[PAUSE -- let the applause settle]      <!-- block-level pause with note -->
+Vice President Johnson, Mr. Speaker,            <!-- spoken line -->
+Mr. Chief Justice, fellow citizens: [BREATHE]   <!-- inline direction -->
 
-## The Challenge                        <!-- slide boundary: starts slide 2 -->
+[PAUSE — let the formalities settle.]           <!-- block-level pause with note -->
 
-[CLICK]                                 <!-- block-level click cue -->
+We observe today not a victory of party         <!-- spoken line -->
+but a celebration of freedom.
 
-Last quarter we faced three problems.   <!-- spoken line -->
+**We dare not forget today that we are          <!-- spoken line with slow emphasis -->
+the heirs of that first revolution.** [BREATHE]
 
-[NOTE -- point to the bar chart]        <!-- block-level presenter note -->
+---                                             <!-- visual divider within the slide -->
 
-The first was speed. [BREATHE]          <!-- spoken line with inline direction -->
-The second was cost. [PAUSE]            <!-- spoken line with inline direction -->
-The third -- and this is the big one    <!-- spoken line (continues below) -->
--- was **trust.** [LOOK UP]             <!-- slow emphasis + inline direction -->
+## A Call to Negotiate                          <!-- slide boundary: starts slide 2 -->
 
----                                     <!-- visual divider within the slide -->
+[CLICK]                                         <!-- block-level click cue -->
 
-So what did we do?                      <!-- spoken line -->
+Let us never negotiate out of fear. [BREATHE]   <!-- spoken line with inline direction -->
 
-[PAUSE -- two beats]                    <!-- block-level pause with note -->
+**But let us never fear to negotiate.**         <!-- spoken line with slow emphasis -->
 
-## The Plan                             <!-- slide boundary: starts slide 3 -->
+[PAUSE — 4 seconds. One of the most quoted lines. Let it breathe fully.]
+                                                <!-- block-level pause with note -->
 
-[CLICK]                                 <!-- block-level click cue -->
+**Ask not what your country can do for you** — <!-- spoken line with slow emphasis -->
 
-We rebuilt everything from scratch.     <!-- spoken line -->
+ask what you can do for your country. [LOOK UP] <!-- inline direction -->
 ````
 
 Copy this into a `.md` file, drop it into Glasspane, and you will see every element rendered on the teleprompter.

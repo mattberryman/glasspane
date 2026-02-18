@@ -31,13 +31,14 @@
 
   <p>Start each new slide with a <code>##</code> heading. The heading text appears on screen as a section title.</p>
 
-  <pre><code>## Opening
+  <pre><code>## Opening — Inaugural Address
 
-Good morning. Thank you for being here.
+Vice President Johnson, Mr. Speaker, Mr. Chief Justice, fellow citizens:
 
-## The Problem
+## Pledges to the World
 
-Last year we lost forty per cent of our customers.</code></pre>
+To those old allies whose cultural and spiritual origins we share,
+we pledge the loyalty of faithful friends.</code></pre>
 
   <p>Everything after a <code>##</code> heading belongs to that slide until the next <code>##</code> heading. If your script has no headings, Glasspane treats the entire file as one slide.</p>
 
@@ -46,11 +47,12 @@ Last year we lost forty per cent of our customers.</code></pre>
 
   <p>Every plain paragraph becomes a line on the teleprompter. Write one thought per paragraph. Glasspane highlights each line as you speak, so shorter paragraphs are easier to follow at a glance.</p>
 
-  <pre><code>We need to talk about what went wrong.
+  <pre><code>We observe today not a victory of party but a celebration of freedom.
 
-The data is clear.
+For I have sworn before you and Almighty God the same solemn oath
+our forebears prescribed nearly a century and three-quarters ago.
 
-Our response time doubled and our customers noticed.</code></pre>
+The world is very different now.</code></pre>
 
   <p>Blank lines between paragraphs are ignored — use them freely to keep your file readable.</p>
 
@@ -59,12 +61,12 @@ Our response time doubled and our customers noticed.</code></pre>
 
   <p>Place a tag in square brackets anywhere inside a spoken line. The tag appears on screen as a small accent-coloured label. The audience never sees it — it is only on your teleprompter.</p>
 
-  <pre><code>We shall fight on the beaches. [BREATHE] We shall fight on the landing grounds.</code></pre>
+  <pre><code>Vice President Johnson, Mr. Speaker, Mr. Chief Justice, fellow citizens: [BREATHE]</code></pre>
 
   <p>On screen that line looks like this:</p>
 
   <div class="demo-line">
-    We shall fight on the beaches. <span class="d">BREATHE</span> We shall fight on the landing grounds.
+    Vice President Johnson, Mr. Speaker, Mr. Chief Justice, fellow citizens: <span class="d">BREATHE</span>
   </div>
 
   <h3>Common tags</h3>
@@ -95,12 +97,12 @@ And we did it together. [GESTURE TO AUDIENCE]</code></pre>
 
   <p>Wrap a word or phrase in double asterisks to mark it for slow, deliberate delivery. On the teleprompter the text appears in a distinct colour so you know to slow down.</p>
 
-  <pre><code>This is not a minor issue. **This is a crisis.**</code></pre>
+  <pre><code>Let us never negotiate out of fear. **But let us never fear to negotiate.**</code></pre>
 
   <p>On screen that line looks like this:</p>
 
   <div class="demo-line">
-    This is not a minor issue. <span class="slow">This is a crisis.</span>
+    Let us never negotiate out of fear. <span class="slow">But let us never fear to negotiate.</span>
   </div>
 
   <p>Use slow emphasis sparingly. If everything is emphasised, nothing is.</p>
@@ -120,33 +122,33 @@ And we did it together. [GESTURE TO AUDIENCE]</code></pre>
 
   <h3>Pause block</h3>
 
-  <pre><code>[PAUSE -- let this land. 4-5 seconds.]</code></pre>
+  <pre><code>[PAUSE — let the formalities settle. Survey the crowd.]</code></pre>
 
   <p>A pause with an optional note to yourself. The double dash (<code>--</code>) separates the tag from the note. On screen:</p>
 
-  <div class="demo-line"><span class="pause-block">[PAUSE — let this land. 4-5 seconds.]</span></div>
+  <div class="demo-line"><span class="pause-block">[PAUSE — let the formalities settle. Survey the crowd.]</span></div>
 
   <p>A bare <code>[PAUSE]</code> on its own line works the same way without the note.</p>
 
   <h3>Presenter note</h3>
 
-  <pre><code>[NOTE -- refer to the chart on screen]</code></pre>
+  <pre><code>[NOTE — 20 January 1961. Washington, D.C. Speak slowly — your breath will be visible in the cold air.]</code></pre>
 
   <p>A note visible only to you. Use it for reminders that are not part of your speech:</p>
 
-  <div class="demo-line"><span class="note-block">[refer to the chart on screen]</span></div>
+  <div class="demo-line"><span class="note-block">[20 January 1961. Washington, D.C. Speak slowly — your breath will be visible in the cold air.]</span></div>
 
   <h3>Inline vs block</h3>
 
   <p>The same tag can be inline or block depending on where you place it. If it is the only thing on the line it becomes a standalone block element. If it sits inside a sentence alongside other words it becomes an inline direction attached to that line.</p>
 
-  <pre><code>We need to act now. [PAUSE]        ← inline: pause cue sits beside the sentence
+  <pre><code>Let us never negotiate out of fear. [PAUSE]    ← inline: pause cue sits beside the sentence
 
-[PAUSE -- three seconds]           ← block: pause stands alone between lines
+[PAUSE — let the opening land]                 ← block: pause stands alone between lines
 
-[CLICK]                            ← block: advance your slide
+[CLICK]                                        ← block: advance your slide
 
-And here is our plan. [BREATHE]    ← inline: breathe cue sits beside the sentence</code></pre>
+fellow citizens: [BREATHE]                     ← inline: breathe cue sits beside the sentence</code></pre>
 
   <!-- ============================================================ -->
   <h2>Slide dividers</h2>
@@ -222,38 +224,39 @@ And here is our plan. [BREATHE]    ← inline: breathe cue sits beside the sente
 
   <p>A short script that uses every feature. Each line has a comment explaining what it does.</p>
 
-  <pre><code>## Welcome                              &lt;!-- slide boundary: starts slide 1 --&gt;
+  <pre><code>## Opening — Inaugural Address                  &lt;!-- slide boundary: starts slide 1 --&gt;
 
-Good evening, everyone. [SMILE]         &lt;!-- spoken line with inline direction --&gt;
+[NOTE — 20 January 1961. Speak slowly.]         &lt;!-- block-level presenter note --&gt;
 
-**Thank you for being here tonight.**   &lt;!-- spoken line with slow emphasis --&gt;
+[CLICK]                                         &lt;!-- block-level click cue --&gt;
 
-[PAUSE -- let the applause settle]      &lt;!-- block-level pause with note --&gt;
+Vice President Johnson, Mr. Speaker,            &lt;!-- spoken line --&gt;
+Mr. Chief Justice, fellow citizens: [BREATHE]   &lt;!-- inline direction --&gt;
 
-## The Challenge                        &lt;!-- slide boundary: starts slide 2 --&gt;
+[PAUSE — let the formalities settle.]           &lt;!-- block-level pause with note --&gt;
 
-[CLICK]                                 &lt;!-- block-level click cue --&gt;
+We observe today not a victory of party         &lt;!-- spoken line --&gt;
+but a celebration of freedom.
 
-Last quarter we faced three problems.   &lt;!-- spoken line --&gt;
+**We dare not forget today that we are          &lt;!-- spoken line with slow emphasis --&gt;
+the heirs of that first revolution.** [BREATHE]
 
-[NOTE -- point to the bar chart]        &lt;!-- block-level presenter note --&gt;
+---                                             &lt;!-- visual divider within the slide --&gt;
 
-The first was speed. [BREATHE]          &lt;!-- spoken line with inline direction --&gt;
-The second was cost. [PAUSE]            &lt;!-- spoken line with inline direction --&gt;
-The third -- and this is the big one    &lt;!-- spoken line (continues below) --&gt;
--- was **trust.** [LOOK UP]             &lt;!-- slow emphasis + inline direction --&gt;
+## A Call to Negotiate                          &lt;!-- slide boundary: starts slide 2 --&gt;
 
----                                     &lt;!-- visual divider within the slide --&gt;
+[CLICK]                                         &lt;!-- block-level click cue --&gt;
 
-So what did we do?                      &lt;!-- spoken line --&gt;
+Let us never negotiate out of fear. [BREATHE]   &lt;!-- spoken line with inline direction --&gt;
 
-[PAUSE -- two beats]                    &lt;!-- block-level pause with note --&gt;
+**But let us never fear to negotiate.**         &lt;!-- spoken line with slow emphasis --&gt;
 
-## The Plan                             &lt;!-- slide boundary: starts slide 3 --&gt;
+[PAUSE — 4 seconds. One of the most quoted lines. Let it breathe fully.]
+                                                &lt;!-- block-level pause with note --&gt;
 
-[CLICK]                                 &lt;!-- block-level click cue --&gt;
+**Ask not what your country can do for you** — &lt;!-- spoken line with slow emphasis --&gt;
 
-We rebuilt everything from scratch.     &lt;!-- spoken line --&gt;</code></pre>
+ask what you can do for your country. [LOOK UP] &lt;!-- inline direction --&gt;</code></pre>
 
   <p>Copy this into a <code>.md</code> file, drop it into Glasspane, and you will see every element rendered on the teleprompter.</p>
 
