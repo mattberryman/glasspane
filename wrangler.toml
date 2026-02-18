@@ -1,0 +1,14 @@
+name = "glasspane"
+main = "worker/src/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[[kv_namespaces]]
+binding = "SCRIPTS"
+id = "REPLACE_WITH_REAL_KV_ID"
+preview_id = "REPLACE_WITH_PREVIEW_KV_ID"
+
+[[rules]]
+type = "Text"
+globs = ["**/*.html"]
+fallthrough = true
