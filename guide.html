@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="night" data-accent="gold">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Script Format — Glasspane</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙</text></svg>">
+<style>
+  /* ============================================================
+     THEMES
+     ============================================================ */
+
+  [data-theme="night"] {
+    --bg: #0c0c0e;
+    --text: #d8d8dc;
+    --text-dim: #8a8a92;
+    --surface: #16161a;
+    --border: #222;
+    --code-bg: #1c1c22;
+  }
+
+  [data-theme="day"] {
+    --bg: #f8f7f4;
+    --text: #1a1a1a;
+    --text-dim: #6e6e6e;
+    --surface: #eeedea;
+    --border: #d8d7d4;
+    --code-bg: #e0dfdc;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    [data-theme="auto"] {
+      --bg: #0c0c0e;
+      --text: #d8d8dc;
+      --text-dim: #8a8a92;
+      --surface: #16161a;
+      --border: #222;
+      --code-bg: #1c1c22;
+    }
+  }
+  @media (prefers-color-scheme: light) {
+    [data-theme="auto"] {
+      --bg: #f8f7f4;
+      --text: #1a1a1a;
+      --text-dim: #6e6e6e;
+      --surface: #eeedea;
+      --border: #d8d7d4;
+      --code-bg: #e0dfdc;
+    }
+  }
+
+  /* ============================================================
+     ACCENTS
+     ============================================================ */
+
+  [data-accent="gold"] {
+    --accent: #c9a84c;
+    --slow-color: #f0c060;
+  }
+
+  [data-accent="teal"] {
+    --accent: #3dbfa8;
+    --slow-color: #5dd8c0;
+  }
+
+  /* ============================================================
+     RESET & BASE
+     ============================================================ */
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: #333 var(--bg);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ============================================================
+     LAYOUT
+     ============================================================ */
+
+  .site-header {
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 10;
+  }
+
+  .site-header .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  .site-header .brand-name {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .site-header .brand-sub {
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  .back-link {
+    font-size: 13px;
+    color: var(--accent);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+  }
+
+  .back-link:hover { text-decoration: underline; }
+
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 24px 96px;
+  }
+
+  /* ============================================================
+     TYPOGRAPHY
+     ============================================================ */
+
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+
+  h2 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-top: 48px;
+    margin-bottom: 14px;
+    color: var(--text);
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h3 {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-top: 28px;
+    margin-bottom: 12px;
+  }
+
+  p {
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  p:last-child { margin-bottom: 0; }
+
+  a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  a:hover { text-decoration: underline; }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  /* ============================================================
+     CODE
+     ============================================================ */
+
+  code {
+    font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
+    font-size: 0.85em;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--accent);
+  }
+
+  pre {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    margin: 20px 0;
+    font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--text);
+  }
+
+  pre code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+    color: inherit;
+    border-radius: 0;
+  }
+
+  /* ============================================================
+     TABLES
+     ============================================================ */
+
+  .table-wrap {
+    overflow-x: auto;
+    margin: 20px 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+
+  th {
+    text-align: left;
+    padding: 9px 14px;
+    background: var(--surface);
+    color: var(--text-dim);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  td code { white-space: nowrap; }
+
+  /* ============================================================
+     INTRO CALLOUT
+     ============================================================ */
+
+  .intro {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin-bottom: 32px;
+    color: var(--text-dim);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .intro a { color: var(--accent); }
+
+  /* ============================================================
+     INLINE DEMO PILLS (showing what things look like on screen)
+     ============================================================ */
+
+  .demo-line {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  .demo-line .d {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    padding: 1px 5px;
+    margin: 0 2px;
+    vertical-align: middle;
+    opacity: 0.85;
+  }
+
+  .demo-line .slow { color: var(--slow-color); }
+
+  .demo-line .click-pill {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: #e05a4022;
+    color: #e05a40;
+    border: 1px solid #e05a4066;
+    border-radius: 3px;
+    padding: 1px 7px;
+  }
+
+  .demo-line .pause-block {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  .demo-line .note-block {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-style: italic;
+    opacity: 0.75;
+  }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+
+  @media (max-width: 600px) {
+    main { padding: 32px 16px 64px; }
+    h1 { font-size: 24px; }
+    h2 { font-size: 18px; margin-top: 36px; }
+    pre { font-size: 12px; padding: 14px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="brand" href="/">
+    <span class="brand-name">🎙 Glasspane</span>
+    <span class="brand-sub">Script format guide</span>
+  </a>
+  <a class="back-link" href="/">← Back to app</a>
+</header>
+
+<main>
+
+  <h1>Script Format</h1>
+
+  <div class="intro">
+    Glasspane reads plain <code>.md</code> (Markdown) files. Write what you want to say, add a few annotations for delivery, and drop the file into the app. No special software required — any text editor works.<br><br>
+    In a hurry? Jump to the <a href="#cheat-sheet">Cheat Sheet</a>.
+  </div>
+
+  <!-- ============================================================ -->
+  <h2>Slide boundaries</h2>
+
+  <p>Start each new slide with a <code>##</code> heading. The heading text appears on screen as a section title.</p>
+
+  <pre><code>## Opening
+
+Good morning. Thank you for being here.
+
+## The Problem
+
+Last year we lost forty per cent of our customers.</code></pre>
+
+  <p>Everything after a <code>##</code> heading belongs to that slide until the next <code>##</code> heading. If your script has no headings, Glasspane treats the entire file as one slide.</p>
+
+  <!-- ============================================================ -->
+  <h2>Spoken lines</h2>
+
+  <p>Every plain paragraph becomes a line on the teleprompter. Write one thought per paragraph. Glasspane highlights each line as you speak, so shorter paragraphs are easier to follow at a glance.</p>
+
+  <pre><code>We need to talk about what went wrong.
+
+The data is clear.
+
+Our response time doubled and our customers noticed.</code></pre>
+
+  <p>Blank lines between paragraphs are ignored — use them freely to keep your file readable.</p>
+
+  <!-- ============================================================ -->
+  <h2>Inline directions</h2>
+
+  <p>Place a tag in square brackets anywhere inside a spoken line. The tag appears on screen as a small accent-coloured label. The audience never sees it — it is only on your teleprompter.</p>
+
+  <pre><code>We shall fight on the beaches. [BREATHE] We shall fight on the landing grounds.</code></pre>
+
+  <p>On screen that line looks like this:</p>
+
+  <div class="demo-line">
+    We shall fight on the beaches. <span class="d">BREATHE</span> We shall fight on the landing grounds.
+  </div>
+
+  <h3>Common tags</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Tag</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>[BREATHE]</code></td><td>Take a breath before continuing</td></tr>
+        <tr><td><code>[PAUSE]</code></td><td>Brief pause for effect</td></tr>
+        <tr><td><code>[SLOW]</code></td><td>Slow your pace for the next phrase</td></tr>
+        <tr><td><code>[LOOK UP]</code></td><td>Make eye contact with the audience</td></tr>
+        <tr><td><code>[SMILE]</code></td><td>Smile — it changes your vocal tone</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Making up your own</h3>
+
+  <p>Any text in square brackets written in ALL CAPS is treated as a direction. Use whatever works for you:</p>
+
+  <pre><code>We exceeded every target. [FIST PUMP]
+
+And we did it together. [GESTURE TO AUDIENCE]</code></pre>
+
+  <!-- ============================================================ -->
+  <h2>Slow emphasis</h2>
+
+  <p>Wrap a word or phrase in double asterisks to mark it for slow, deliberate delivery. On the teleprompter the text appears in a distinct colour so you know to slow down.</p>
+
+  <pre><code>This is not a minor issue. **This is a crisis.**</code></pre>
+
+  <p>On screen that line looks like this:</p>
+
+  <div class="demo-line">
+    This is not a minor issue. <span class="slow">This is a crisis.</span>
+  </div>
+
+  <p>Use slow emphasis sparingly. If everything is emphasised, nothing is.</p>
+
+  <!-- ============================================================ -->
+  <h2>Block-level cues</h2>
+
+  <p>A block-level cue sits on its own line — it is not part of a spoken sentence. It tells you to do something between lines of speech. There are three kinds.</p>
+
+  <h3>Click cue</h3>
+
+  <pre><code>[CLICK]</code></pre>
+
+  <p>Signals that you should advance your presentation slide. On the teleprompter it appears as a small highlighted pill:</p>
+
+  <div class="demo-line"><span class="click-pill">CLICK</span></div>
+
+  <h3>Pause block</h3>
+
+  <pre><code>[PAUSE -- let this land. 4-5 seconds.]</code></pre>
+
+  <p>A pause with an optional note to yourself. The double dash (<code>--</code>) separates the tag from the note. On screen:</p>
+
+  <div class="demo-line"><span class="pause-block">[PAUSE — let this land. 4-5 seconds.]</span></div>
+
+  <p>A bare <code>[PAUSE]</code> on its own line works the same way without the note.</p>
+
+  <h3>Presenter note</h3>
+
+  <pre><code>[NOTE -- refer to the chart on screen]</code></pre>
+
+  <p>A note visible only to you. Use it for reminders that are not part of your speech:</p>
+
+  <div class="demo-line"><span class="note-block">[refer to the chart on screen]</span></div>
+
+  <h3>Inline vs block</h3>
+
+  <p>The same tag can be inline or block depending on where you place it. If it is the only thing on the line it becomes a standalone block element. If it sits inside a sentence alongside other words it becomes an inline direction attached to that line.</p>
+
+  <pre><code>We need to act now. [PAUSE]        ← inline: pause cue sits beside the sentence
+
+[PAUSE -- three seconds]           ← block: pause stands alone between lines
+
+[CLICK]                            ← block: advance your slide
+
+And here is our plan. [BREATHE]    ← inline: breathe cue sits beside the sentence</code></pre>
+
+  <!-- ============================================================ -->
+  <h2>Slide dividers</h2>
+
+  <p>Glasspane automatically inserts a visual divider between slides. You do not need to add anything yourself — the <code>##</code> headings handle it.</p>
+
+  <p>For an extra visual break <em>within</em> a slide, insert a horizontal rule:</p>
+
+  <pre><code>---</code></pre>
+
+  <p>This adds a thin line across the teleprompter at that point.</p>
+
+  <!-- ============================================================ -->
+  <h2 id="cheat-sheet">Cheat sheet</h2>
+
+  <h3>Structure</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Syntax</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td><code>## Heading text</code></td><td>Starts a new slide section</td></tr>
+        <tr><td>Plain paragraph</td><td>A spoken line on the teleprompter</td></tr>
+        <tr><td>Blank line</td><td>Ignored — use freely for readability</td></tr>
+        <tr><td><code>---</code></td><td>Horizontal divider within a slide</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Inline directions (inside a spoken line)</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Syntax</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td><code>[BREATHE]</code></td><td>Breath cue</td></tr>
+        <tr><td><code>[PAUSE]</code></td><td>Brief pause</td></tr>
+        <tr><td><code>[SLOW]</code></td><td>Slow your pace</td></tr>
+        <tr><td><code>[LOOK UP]</code></td><td>Make eye contact</td></tr>
+        <tr><td><code>[SMILE]</code></td><td>Smile</td></tr>
+        <tr><td><code>[ANY CAPS]</code></td><td>Custom direction — any all-caps text works</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Slow emphasis (inside a spoken line)</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Syntax</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td><code>**words**</code></td><td>Gold text — speak slowly and deliberately</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Block-level cues (alone on a line)</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Syntax</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td><code>[CLICK]</code></td><td>Advance your presentation slide</td></tr>
+        <tr><td><code>[PAUSE]</code></td><td>Standalone pause</td></tr>
+        <tr><td><code>[PAUSE -- note]</code></td><td>Pause with a reminder to yourself</td></tr>
+        <tr><td><code>[NOTE -- text]</code></td><td>Presenter note (not spoken)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ============================================================ -->
+  <h2>Annotated example</h2>
+
+  <p>A short script that uses every feature. Each line has a comment explaining what it does.</p>
+
+  <pre><code>## Welcome                              &lt;!-- slide boundary: starts slide 1 --&gt;
+
+Good evening, everyone. [SMILE]         &lt;!-- spoken line with inline direction --&gt;
+
+**Thank you for being here tonight.**   &lt;!-- spoken line with slow emphasis --&gt;
+
+[PAUSE -- let the applause settle]      &lt;!-- block-level pause with note --&gt;
+
+## The Challenge                        &lt;!-- slide boundary: starts slide 2 --&gt;
+
+[CLICK]                                 &lt;!-- block-level click cue --&gt;
+
+Last quarter we faced three problems.   &lt;!-- spoken line --&gt;
+
+[NOTE -- point to the bar chart]        &lt;!-- block-level presenter note --&gt;
+
+The first was speed. [BREATHE]          &lt;!-- spoken line with inline direction --&gt;
+The second was cost. [PAUSE]            &lt;!-- spoken line with inline direction --&gt;
+The third -- and this is the big one    &lt;!-- spoken line (continues below) --&gt;
+-- was **trust.** [LOOK UP]             &lt;!-- slow emphasis + inline direction --&gt;
+
+---                                     &lt;!-- visual divider within the slide --&gt;
+
+So what did we do?                      &lt;!-- spoken line --&gt;
+
+[PAUSE -- two beats]                    &lt;!-- block-level pause with note --&gt;
+
+## The Plan                             &lt;!-- slide boundary: starts slide 3 --&gt;
+
+[CLICK]                                 &lt;!-- block-level click cue --&gt;
+
+We rebuilt everything from scratch.     &lt;!-- spoken line --&gt;</code></pre>
+
+  <p>Copy this into a <code>.md</code> file, drop it into Glasspane, and you will see every element rendered on the teleprompter.</p>
+
+</main>
+
+</body>
+</html>

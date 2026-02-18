@@ -1,6 +1,6 @@
 import { generateId } from "./id";
 import { UploadSchema } from "./schema";
-import { DEMO_SCRIPT, HTML } from "./template";
+import { DEMO_SCRIPT, GUIDE_HTML, HTML } from "./template";
 
 export interface Env {
 	SCRIPTS: KVNamespace;
@@ -134,6 +134,15 @@ export default {
 				headers: {
 					"Content-Type": "text/plain; charset=utf-8",
 					...CORS_HEADERS,
+				},
+			});
+		}
+
+		if (method === "GET" && pathname === "/guide") {
+			return new Response(GUIDE_HTML, {
+				headers: {
+					"Content-Type": "text/html; charset=utf-8",
+					...SECURITY_HEADERS,
 				},
 			});
 		}
