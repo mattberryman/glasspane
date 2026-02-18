@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "test": "vitest run",
+    "test": "vitest run --project worker",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
