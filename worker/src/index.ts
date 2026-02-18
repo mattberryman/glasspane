@@ -1,6 +1,6 @@
 import { UploadSchema } from './schema';
 import { generateId } from './id';
-import HTML from './template';
+import { HTML, DEMO_SCRIPT } from './template';
 
 export interface Env {
   SCRIPTS: KVNamespace;
@@ -117,6 +117,17 @@ export default {
 
     if (method === 'GET' && (pathname === '/' || pathname === '/index.html')) {
       return serveHtml(null);
+    }
+
+    if (method === 'GET' && pathname === '/scripts/jfk-inaugural.md') {
+      return new Response(DEMO_SCRIPT, {
+        headers: { 'Content-Type': 'text/plain; charset=utf-8', ...CORS_HEADERS },
+      });
+    }
+
+    // Silence the browser's automatic favicon request
+    if (method === 'GET' && pathname === '/favicon.ico') {
+      return new Response(null, { status: 204 });
     }
 
     return new Response('Not found', { status: 404 });
