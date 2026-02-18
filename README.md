@@ -56,6 +56,8 @@ npm install
 npm run build
 ```
 
+Source files live in `src/` — assembled by the build step into the self-contained `dist/teleprompter.html`.
+
 Open `dist/teleprompter.html` directly in a browser. Drag a `.md` file onto it. No server required.
 
 Run tests:
