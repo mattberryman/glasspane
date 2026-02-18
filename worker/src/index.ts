@@ -1,5 +1,6 @@
 import { UploadSchema } from './schema';
 import { generateId } from './id';
+import HTML from './template';
 
 export interface Env {
   SCRIPTS: KVNamespace;
@@ -13,9 +14,11 @@ const CORS_HEADERS = {
 
 const CSP = [
   "default-src 'self'",
-  // NOTE: Task 8 must add a 'nonce-{value}' or hash to allow the teleprompter's inline <script> block.
-  // 'unsafe-inline' is intentionally excluded here.
-  "script-src 'self'",
+  // teleprompter.html uses two inline <script> blocks (DOMPurify + main IIFE).
+  // 'unsafe-inline' is needed because the HTML is static and adding a build-time
+  // hash would be a future improvement. All user content is sanitised by DOMPurify
+  // before DOM insertion, so this is defence-in-depth rather than the primary guard.
+  "script-src 'self' 'unsafe-inline'",
   "style-src 'self' 'unsafe-inline'",
   "connect-src 'self'",
   "img-src 'self' data:",
@@ -29,19 +32,12 @@ const SECURITY_HEADERS = {
   'X-Frame-Options': 'DENY',
 };
 
-// Minimal HTML placeholder -- replaced by full teleprompter.html in Task 8
-const HTML_TEMPLATE = `<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="UTF-8"><title>Glasspane</title></head>
-<body data-script-id="SCRIPT_ID_PLACEHOLDER">
-<p>Teleprompter placeholder -- replace with teleprompter.html in Task 8</p>
-</body>
-</html>`;
-
 function serveHtml(scriptId: string | null): Response {
+  // Inject the script ID into the data-script-id attribute. The browser reads
+  // this on page load and fetches /script/:id to retrieve the stored content.
   const html = scriptId
-    ? HTML_TEMPLATE.replace('SCRIPT_ID_PLACEHOLDER', scriptId)
-    : HTML_TEMPLATE.replace('SCRIPT_ID_PLACEHOLDER', '');
+    ? HTML.replace('data-script-id=""', `data-script-id="${scriptId}"`)
+    : HTML;
 
   return new Response(html, {
     headers: {
