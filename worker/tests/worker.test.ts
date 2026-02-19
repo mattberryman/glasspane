@@ -93,3 +93,56 @@ describe("GET /s/:id", () => {
 		expect(html).toContain(id);
 	});
 });
+
+describe("security headers", () => {
+	it("sets hardening headers on HTML responses", async () => {
+		const res = await workerFetch("/");
+		expect(res.status).toBe(200);
+		expect(res.headers.get("content-security-policy")).toContain(
+			"default-src 'self'",
+		);
+		expect(res.headers.get("strict-transport-security")).toContain(
+			"max-age=31536000",
+		);
+		expect(res.headers.get("x-content-type-options")).toBe("nosniff");
+	});
+});
+
+describe("CORS policy", () => {
+	it("allows configured origins", async () => {
+		const res = await workerFetch("/upload", {
+			method: "OPTIONS",
+			headers: { Origin: "http://localhost:8787" },
+		});
+		expect(res.status).toBe(204);
+		expect(res.headers.get("access-control-allow-origin")).toBe(
+			"http://localhost:8787",
+		);
+	});
+
+	it("rejects unconfigured origins for preflight", async () => {
+		const res = await workerFetch("/upload", {
+			method: "OPTIONS",
+			headers: { Origin: "https://evil.example" },
+		});
+		expect(res.status).toBe(403);
+	});
+});
+
+describe("stylesheets", () => {
+	it("serves teleprompter stylesheet", async () => {
+		const res = await workerFetch("/styles/teleprompter.css");
+		expect(res.status).toBe(200);
+		expect(res.headers.get("content-type")).toContain("text/css");
+		const css = await res.text();
+		expect(css).toContain(".progress-bar");
+	});
+
+	it("serves guide stylesheet", async () => {
+		const res = await workerFetch("/styles/guide.css");
+		expect(res.status).toBe(200);
+		expect(res.headers.get("content-type")).toContain("text/css");
+		const css = await res.text();
+		expect(css).toContain(".site-header");
+	});
+});
