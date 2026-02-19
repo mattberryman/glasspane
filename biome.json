@@ -84,7 +84,7 @@
       }
     },
     {
-      "includes": ["src/app.js"],
+      "includes": ["src/runtime/**"],
       "linter": { "enabled": false }
     }
   ],
