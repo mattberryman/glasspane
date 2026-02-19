@@ -2,6 +2,18 @@
 // SCRIPT LOADING
 // ============================================================
 
+function showDropMessage(message) {
+	var target = document.getElementById("dropMessage");
+	if (!target) {
+		target = document.createElement("div");
+		target.id = "dropMessage";
+		target.className = "share-error";
+		var dropTarget = document.getElementById("dropTarget");
+		dropTarget.parentNode.insertBefore(target, dropTarget.nextSibling);
+	}
+	target.textContent = message;
+}
+
 function loadScript(text) {
 	var slides = parseScript(text);
 	renderScript(slides);
@@ -24,7 +36,7 @@ function handleFile(file) {
 		loadScript(reader.result);
 	};
 	reader.onerror = function () {
-		alert("Could not read file.");
+		showDropMessage("Could not read file.");
 	};
 	reader.readAsText(file);
 }
@@ -60,7 +72,7 @@ document.getElementById("fileInput").addEventListener("change", function (e) {
 // Demo link
 document.getElementById("demoLink").addEventListener("click", function (e) {
 	e.preventDefault();
-	fetch("./scripts/jfk-inaugural.md")
+	fetch("/scripts/jfk-inaugural.md")
 		.then(function (r) {
 			if (!r.ok) throw new Error("Demo script not found (" + r.status + ")");
 			return r.text();
@@ -69,7 +81,7 @@ document.getElementById("demoLink").addEventListener("click", function (e) {
 			loadScript(text);
 		})
 		.catch(function (err) {
-			alert("Could not load demo: " + err.message);
+			showDropMessage("Could not load demo: " + err.message);
 		});
 });
 
@@ -117,11 +129,8 @@ if (scriptId) {
 			loadScript(text);
 		})
 		.catch(function () {
-			var dropTarget = document.getElementById("dropTarget");
-			var errMsg = document.createElement("div");
-			errMsg.className = "share-error";
-			errMsg.textContent =
-				"The shared script could not be found. It may have expired or been removed.";
-			dropTarget.parentNode.insertBefore(errMsg, dropTarget.nextSibling);
+			showDropMessage(
+				"The shared script could not be found. It may have expired or been removed.",
+			);
 		});
 }
