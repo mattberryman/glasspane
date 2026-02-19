@@ -2,6 +2,7 @@ import { generateId } from "./id";
 import { UploadSchema } from "./schema";
 import {
 	CSP_SCRIPT_HASHES,
+	CSP_STYLE_HASHES,
 	DEMO_SCRIPT,
 	GUIDE_CSS,
 	GUIDE_HTML,
@@ -26,7 +27,7 @@ const CSP = [
 	// Build-time SHA-256 hashes cover the two inline <script> blocks (DOMPurify +
 	// main IIFE), removing the need for 'unsafe-inline'.
 	`script-src 'self' ${CSP_SCRIPT_HASHES}`,
-	"style-src 'self' 'unsafe-inline'",
+	`style-src 'self' ${CSP_STYLE_HASHES}`,
 	"connect-src 'self'",
 	"img-src 'self' data:",
 	"object-src 'none'",

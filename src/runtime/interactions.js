@@ -67,6 +67,7 @@ function initTeleprompter() {
 	var timerEl = document.getElementById("timer");
 	var timerDisplay = document.getElementById("timerDisplay");
 	var progressFill = document.getElementById("progressFill");
+	var progressClass = "progress-0";
 	var scrollIndicator = document.getElementById("scrollIndicator");
 	var scrollDots = document.querySelectorAll("#scrollDots .dot");
 	var scrollSpeedName = document.getElementById("scrollSpeedName");
@@ -88,7 +89,7 @@ function initTeleprompter() {
 
 	function updateProgress() {
 		var pct = ((activeIndex + 1) / tpLines.length) * 100;
-		progressFill.style.width = pct + "%";
+		setProgressPercent(pct);
 	}
 
 	function updateSlidePips() {
@@ -100,6 +101,17 @@ function initTeleprompter() {
 			p.classList.toggle("active", "slide-" + p.dataset.slide === slideId);
 		});
 	}
+
+	setProgressPercent = function (pct) {
+		var bounded = Math.max(0, Math.min(100, Math.round(pct)));
+		var nextClass = "progress-" + bounded;
+		if (progressClass === nextClass) {
+			return;
+		}
+		progressFill.classList.remove(progressClass);
+		progressFill.classList.add(nextClass);
+		progressClass = nextClass;
+	};
 
 	// AUTO-SCROLL
 	function updateSpeedDisplay() {
@@ -114,7 +126,7 @@ function initTeleprompter() {
 		scrollActive = true;
 		lastFrameTime = null;
 		scrollAccumulator = 0;
-		htmlEl.style.scrollBehavior = "auto";
+		htmlEl.classList.add("scroll-manual");
 		scrollIndicator.classList.add("visible");
 		scrollGlow.classList.add("visible");
 		updateSpeedDisplay();
@@ -124,7 +136,7 @@ function initTeleprompter() {
 	stopScroll = function () {
 		if (!scrollActive) return;
 		scrollActive = false;
-		htmlEl.style.scrollBehavior = "smooth";
+		htmlEl.classList.remove("scroll-manual");
 		scrollIndicator.classList.remove("visible");
 		scrollGlow.classList.remove("visible");
 		if (scrollRAF) {
@@ -176,8 +188,7 @@ function initTeleprompter() {
 	// KEYBOARD (registered once)
 	document.addEventListener("keydown", function (e) {
 		// Only respond when teleprompter is visible
-		if (document.getElementById("teleprompter").style.display === "none")
-			return;
+		if (document.getElementById("teleprompter").hidden) return;
 
 		if (e.key === "Escape") {
 			if (scrollActive) {
@@ -316,7 +327,7 @@ function initTeleprompter() {
 				document.documentElement.scrollHeight - window.innerHeight;
 			if (maxScroll > 0) {
 				var pct = (window.scrollY / maxScroll) * 100;
-				progressFill.style.width = pct + "%";
+				setProgressPercent(pct);
 			}
 		},
 		{ passive: true },

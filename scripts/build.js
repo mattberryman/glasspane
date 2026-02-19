@@ -56,6 +56,18 @@ for (const match of inlined.matchAll(SCRIPT_BLOCK_RE)) {
 }
 const cspScriptHashes = cspHashes.join(" ");
 
+// Compute style block hashes for teleprompter + guide HTML so CSP can avoid
+// relying on style-src 'unsafe-inline'.
+const STYLE_BLOCK_RE = /<style>([\s\S]*?)<\/style>/g;
+const cspStyleHashes = new Set();
+for (const source of [inlined, guideHtml]) {
+	for (const match of source.matchAll(STYLE_BLOCK_RE)) {
+		const hash = createHash("sha256").update(match[1]).digest("base64");
+		cspStyleHashes.add(`'sha256-${hash}'`);
+	}
+}
+const cspStyleHashesJoined = Array.from(cspStyleHashes).join(" ");
+
 // Generate worker/src/template.ts so the Worker can import the HTML and demo
 // script as TypeScript modules (avoids HTML/MD module resolution issues in
 // Miniflare/vitest).
@@ -71,6 +83,7 @@ const templateTs =
 	`export const GUIDE_HTML = ${JSON.stringify(guideHtml)};\n` +
 	`export const TELEPROMPTER_CSS = ${JSON.stringify(css)};\n` +
 	`export const GUIDE_CSS = ${JSON.stringify(guideCss)};\n` +
-	`export const CSP_SCRIPT_HASHES = ${JSON.stringify(cspScriptHashes)};\n`;
+	`export const CSP_SCRIPT_HASHES = ${JSON.stringify(cspScriptHashes)};\n` +
+	`export const CSP_STYLE_HASHES = ${JSON.stringify(cspStyleHashesJoined)};\n`;
 writeFileSync(resolve(root, "worker/src/template.ts"), templateTs, "utf8");
 console.log("Generated: worker/src/template.ts");

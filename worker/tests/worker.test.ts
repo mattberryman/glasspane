@@ -98,9 +98,9 @@ describe("security headers", () => {
 	it("sets hardening headers on HTML responses", async () => {
 		const res = await workerFetch("/");
 		expect(res.status).toBe(200);
-		expect(res.headers.get("content-security-policy")).toContain(
-			"default-src 'self'",
-		);
+		const csp = res.headers.get("content-security-policy") ?? "";
+		expect(csp).toContain("default-src 'self'");
+		expect(csp).not.toContain("'unsafe-inline'");
 		expect(res.headers.get("strict-transport-security")).toContain(
 			"max-age=31536000",
 		);

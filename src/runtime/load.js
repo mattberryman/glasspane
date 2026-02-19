@@ -5,9 +5,9 @@
 function loadScript(text) {
 	var slides = parseScript(text);
 	renderScript(slides);
-	document.getElementById("drop-zone").style.display = "none";
+	document.getElementById("drop-zone").hidden = true;
 	document.getElementById("fileInput").disabled = true;
-	document.getElementById("teleprompter").style.display = "";
+	document.getElementById("teleprompter").hidden = false;
 	window.scrollTo(0, 0);
 
 	if (!teleprompterInited) {
@@ -84,8 +84,8 @@ document.getElementById("loadNewBtn").addEventListener("click", function () {
 		timerRunning = false;
 	}
 
-	document.getElementById("teleprompter").style.display = "none";
-	document.getElementById("drop-zone").style.display = "";
+	document.getElementById("teleprompter").hidden = true;
+	document.getElementById("drop-zone").hidden = false;
 	document.getElementById("fileInput").disabled = false;
 	var scriptContent = document.getElementById("scriptContent");
 	while (scriptContent.firstChild) {
@@ -97,7 +97,9 @@ document.getElementById("loadNewBtn").addEventListener("click", function () {
 	}
 	document.getElementById("settingsPanel").classList.remove("visible");
 	// Reset progress
-	document.getElementById("progressFill").style.width = "0%";
+	if (setProgressPercent) {
+		setProgressPercent(0);
+	}
 	// Reset timer display
 	document.getElementById("timerDisplay").textContent = "00:00";
 	document.getElementById("timer").classList.remove("running");
@@ -117,8 +119,7 @@ if (scriptId) {
 		.catch(function () {
 			var dropTarget = document.getElementById("dropTarget");
 			var errMsg = document.createElement("div");
-			errMsg.style.cssText =
-				"color: var(--click); margin-top: 12px; font-size: 14px;";
+			errMsg.className = "share-error";
 			errMsg.textContent =
 				"The shared script could not be found. It may have expired or been removed.";
 			dropTarget.parentNode.insertBefore(errMsg, dropTarget.nextSibling);
