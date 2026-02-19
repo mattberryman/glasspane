@@ -60,6 +60,8 @@ const templateTs =
 	`export const HTML = ${JSON.stringify(inlined)};\n` +
 	`export const DEMO_SCRIPT = ${JSON.stringify(demoScript)};\n` +
 	`export const GUIDE_HTML = ${JSON.stringify(guideHtml)};\n` +
+	`export const TELEPROMPTER_CSS = ${JSON.stringify(css)};\n` +
+	`export const GUIDE_CSS = ${JSON.stringify(guideCss)};\n` +
 	`export const CSP_SCRIPT_HASHES = ${JSON.stringify(cspScriptHashes)};\n`;
 writeFileSync(resolve(root, "worker/src/template.ts"), templateTs, "utf8");
 console.log("Generated: worker/src/template.ts");
