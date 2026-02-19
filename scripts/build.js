@@ -9,8 +9,17 @@ const root = resolve(__dirname, "..");
 // Read source files
 const shell = readFileSync(resolve(root, "src/teleprompter.html"), "utf8");
 const css = readFileSync(resolve(root, "src/teleprompter.css"), "utf8");
-const appJs = readFileSync(resolve(root, "src/app.js"), "utf8");
 const parserJs = readFileSync(resolve(root, "src/parser.js"), "utf8");
+const runtimeFiles = [
+	"src/runtime/state.js",
+	"src/runtime/render.js",
+	"src/runtime/load.js",
+	"src/runtime/interactions.js",
+	"src/runtime/settings.js",
+];
+const runtimeJs = runtimeFiles
+	.map((file) => readFileSync(resolve(root, file), "utf8"))
+	.join("\n\n");
 const purify = readFileSync(
 	resolve(root, "node_modules/dompurify/dist/purify.min.js"),
 	"utf8",
@@ -25,7 +34,7 @@ const parserBrowser = parserJs.replace(/^export\s+/gm, "").trimEnd();
 const inlined = shell
 	.replace("<!-- INJECT:CSS -->", css)
 	.replace("<!-- INJECT:DOMPURIFY -->", `<script>${purify}</script>`)
-	.replace("<!-- INJECT:APP -->", `${parserBrowser}\n\n${appJs}`);
+	.replace("<!-- INJECT:APP -->", `${parserBrowser}\n\n${runtimeJs}`);
 
 // Assemble guide
 const guideHtml = guideShell.replace("<!-- INJECT:CSS -->", guideCss);
