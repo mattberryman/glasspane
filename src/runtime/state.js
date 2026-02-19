@@ -42,3 +42,4 @@ var stopScroll;
 var startScroll;
 var changeSpeed;
 var setActive;
+var setProgressPercent;

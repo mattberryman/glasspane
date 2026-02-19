@@ -136,6 +136,10 @@ html {
 	scrollbar-color: #333 var(--bg);
 }
 
+html.scroll-manual {
+	scroll-behavior: auto;
+}
+
 body {
 	background: var(--bg);
 	color: var(--text);
@@ -244,6 +248,12 @@ body {
 	opacity: 1;
 }
 
+.share-error {
+	color: var(--click);
+	margin-top: 12px;
+	font-size: 14px;
+}
+
 /* ============================================================
      PROGRESS BAR
      ============================================================ */
@@ -262,6 +272,311 @@ body {
 	background: var(--slide-border);
 	width: 0%;
 	transition: width 0.3s ease;
+}
+
+/* Progress fill classes (used instead of inline style mutations) */
+.progress-fill.progress-0 {
+	width: 0%;
+}
+.progress-fill.progress-1 {
+	width: 1%;
+}
+.progress-fill.progress-2 {
+	width: 2%;
+}
+.progress-fill.progress-3 {
+	width: 3%;
+}
+.progress-fill.progress-4 {
+	width: 4%;
+}
+.progress-fill.progress-5 {
+	width: 5%;
+}
+.progress-fill.progress-6 {
+	width: 6%;
+}
+.progress-fill.progress-7 {
+	width: 7%;
+}
+.progress-fill.progress-8 {
+	width: 8%;
+}
+.progress-fill.progress-9 {
+	width: 9%;
+}
+.progress-fill.progress-10 {
+	width: 10%;
+}
+.progress-fill.progress-11 {
+	width: 11%;
+}
+.progress-fill.progress-12 {
+	width: 12%;
+}
+.progress-fill.progress-13 {
+	width: 13%;
+}
+.progress-fill.progress-14 {
+	width: 14%;
+}
+.progress-fill.progress-15 {
+	width: 15%;
+}
+.progress-fill.progress-16 {
+	width: 16%;
+}
+.progress-fill.progress-17 {
+	width: 17%;
+}
+.progress-fill.progress-18 {
+	width: 18%;
+}
+.progress-fill.progress-19 {
+	width: 19%;
+}
+.progress-fill.progress-20 {
+	width: 20%;
+}
+.progress-fill.progress-21 {
+	width: 21%;
+}
+.progress-fill.progress-22 {
+	width: 22%;
+}
+.progress-fill.progress-23 {
+	width: 23%;
+}
+.progress-fill.progress-24 {
+	width: 24%;
+}
+.progress-fill.progress-25 {
+	width: 25%;
+}
+.progress-fill.progress-26 {
+	width: 26%;
+}
+.progress-fill.progress-27 {
+	width: 27%;
+}
+.progress-fill.progress-28 {
+	width: 28%;
+}
+.progress-fill.progress-29 {
+	width: 29%;
+}
+.progress-fill.progress-30 {
+	width: 30%;
+}
+.progress-fill.progress-31 {
+	width: 31%;
+}
+.progress-fill.progress-32 {
+	width: 32%;
+}
+.progress-fill.progress-33 {
+	width: 33%;
+}
+.progress-fill.progress-34 {
+	width: 34%;
+}
+.progress-fill.progress-35 {
+	width: 35%;
+}
+.progress-fill.progress-36 {
+	width: 36%;
+}
+.progress-fill.progress-37 {
+	width: 37%;
+}
+.progress-fill.progress-38 {
+	width: 38%;
+}
+.progress-fill.progress-39 {
+	width: 39%;
+}
+.progress-fill.progress-40 {
+	width: 40%;
+}
+.progress-fill.progress-41 {
+	width: 41%;
+}
+.progress-fill.progress-42 {
+	width: 42%;
+}
+.progress-fill.progress-43 {
+	width: 43%;
+}
+.progress-fill.progress-44 {
+	width: 44%;
+}
+.progress-fill.progress-45 {
+	width: 45%;
+}
+.progress-fill.progress-46 {
+	width: 46%;
+}
+.progress-fill.progress-47 {
+	width: 47%;
+}
+.progress-fill.progress-48 {
+	width: 48%;
+}
+.progress-fill.progress-49 {
+	width: 49%;
+}
+.progress-fill.progress-50 {
+	width: 50%;
+}
+.progress-fill.progress-51 {
+	width: 51%;
+}
+.progress-fill.progress-52 {
+	width: 52%;
+}
+.progress-fill.progress-53 {
+	width: 53%;
+}
+.progress-fill.progress-54 {
+	width: 54%;
+}
+.progress-fill.progress-55 {
+	width: 55%;
+}
+.progress-fill.progress-56 {
+	width: 56%;
+}
+.progress-fill.progress-57 {
+	width: 57%;
+}
+.progress-fill.progress-58 {
+	width: 58%;
+}
+.progress-fill.progress-59 {
+	width: 59%;
+}
+.progress-fill.progress-60 {
+	width: 60%;
+}
+.progress-fill.progress-61 {
+	width: 61%;
+}
+.progress-fill.progress-62 {
+	width: 62%;
+}
+.progress-fill.progress-63 {
+	width: 63%;
+}
+.progress-fill.progress-64 {
+	width: 64%;
+}
+.progress-fill.progress-65 {
+	width: 65%;
+}
+.progress-fill.progress-66 {
+	width: 66%;
+}
+.progress-fill.progress-67 {
+	width: 67%;
+}
+.progress-fill.progress-68 {
+	width: 68%;
+}
+.progress-fill.progress-69 {
+	width: 69%;
+}
+.progress-fill.progress-70 {
+	width: 70%;
+}
+.progress-fill.progress-71 {
+	width: 71%;
+}
+.progress-fill.progress-72 {
+	width: 72%;
+}
+.progress-fill.progress-73 {
+	width: 73%;
+}
+.progress-fill.progress-74 {
+	width: 74%;
+}
+.progress-fill.progress-75 {
+	width: 75%;
+}
+.progress-fill.progress-76 {
+	width: 76%;
+}
+.progress-fill.progress-77 {
+	width: 77%;
+}
+.progress-fill.progress-78 {
+	width: 78%;
+}
+.progress-fill.progress-79 {
+	width: 79%;
+}
+.progress-fill.progress-80 {
+	width: 80%;
+}
+.progress-fill.progress-81 {
+	width: 81%;
+}
+.progress-fill.progress-82 {
+	width: 82%;
+}
+.progress-fill.progress-83 {
+	width: 83%;
+}
+.progress-fill.progress-84 {
+	width: 84%;
+}
+.progress-fill.progress-85 {
+	width: 85%;
+}
+.progress-fill.progress-86 {
+	width: 86%;
+}
+.progress-fill.progress-87 {
+	width: 87%;
+}
+.progress-fill.progress-88 {
+	width: 88%;
+}
+.progress-fill.progress-89 {
+	width: 89%;
+}
+.progress-fill.progress-90 {
+	width: 90%;
+}
+.progress-fill.progress-91 {
+	width: 91%;
+}
+.progress-fill.progress-92 {
+	width: 92%;
+}
+.progress-fill.progress-93 {
+	width: 93%;
+}
+.progress-fill.progress-94 {
+	width: 94%;
+}
+.progress-fill.progress-95 {
+	width: 95%;
+}
+.progress-fill.progress-96 {
+	width: 96%;
+}
+.progress-fill.progress-97 {
+	width: 97%;
+}
+.progress-fill.progress-98 {
+	width: 98%;
+}
+.progress-fill.progress-99 {
+	width: 99%;
+}
+.progress-fill.progress-100 {
+	width: 100%;
 }
 
 /* ============================================================
