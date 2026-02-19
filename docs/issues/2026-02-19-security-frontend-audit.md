@@ -46,24 +46,24 @@ CSP currently includes `style-src 'unsafe-inline'` due dynamic inline style usag
 
 ## 3) Security: add upload abuse controls
 - Category: Security posture
-- Severity: High
+- Severity: Low/Medium
 - Status: Open
 
 ### Title
 Security: implement rate limiting and abuse protection for `/upload`
 
 ### Body
-`POST /upload` is unauthenticated and currently protected only by payload size/schema validation. There is no rate limiting or abuse protection.
+`POST /upload` is unauthenticated, but production now has an existing Cloudflare WAF rate-limit control: more than 3 attempts from a single IP triggers a 10-second block. This materially mitigates basic burst abuse on the free plan. Remaining risk is primarily defense-in-depth (e.g., distributed sources, noisy low-and-slow traffic, and lack of app-level telemetry on blocked attempts).
 
 #### Proposed scope
-- Add Cloudflare-native rate limiting (edge policy and/or KV-backed guardrail)
-- Return `429` with explicit retry semantics
-- Add operational visibility for blocked requests
+- Keep existing CF WAF rule as baseline control
+- Add optional app-level guardrail only if abuse is observed (e.g., lightweight heuristic counters or turnstile gate)
+- Add operational visibility to track `/upload` pressure and blocked requests over time
 
 #### Acceptance criteria
-- Repeated high-frequency upload attempts are throttled
-- Normal user flow remains unaffected
-- Worker tests cover abuse and `429` behavior
+- Existing WAF threshold is documented in runbook/repo docs
+- Monitoring can distinguish normal upload volume from blocked/abusive patterns
+- Any new app-level mitigation is justified by observed abuse data (not change for change's sake)
 
 ## 4) Completed in branch `codex/security-frontend-hardening`
 - Category: Implemented remediation
