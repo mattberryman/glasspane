@@ -1,0 +1,36 @@
+import { useEffect } from "preact/hooks";
+import { useSettings } from "../hooks/useSettings.js";
+import { parseScript } from "../parser.js";
+import { scriptLoaded, slides } from "../state.js";
+import { DropZone } from "./DropZone.js";
+import { Teleprompter } from "./Teleprompter.js";
+
+export function App() {
+	// Run at app level so theme/accent persist across DropZone ↔ Teleprompter transitions
+	useSettings();
+
+	// On mount: check for shared script via meta[name="script-id"]
+	useEffect(() => {
+		const id = document.head
+			.querySelector('meta[name="script-id"]')
+			?.getAttribute("content");
+		if (id) {
+			fetch(`/script/${id}`)
+				.then((r) => {
+					if (!r.ok) {
+						throw new Error("Script not found");
+					}
+					return r.text();
+				})
+				.then((text) => {
+					slides.value = parseScript(text);
+					scriptLoaded.value = true;
+				})
+				.catch(() => {
+					// Script not found — stay on drop zone
+				});
+		}
+	}, []);
+
+	return scriptLoaded.value ? <Teleprompter /> : <DropZone />;
+}

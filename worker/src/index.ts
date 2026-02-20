@@ -1,11 +1,11 @@
 import { generateId } from "./id";
 import { UploadSchema } from "./schema";
-import { CSP_SCRIPT_HASHES, DEMO_SCRIPT, GUIDE_HTML, HTML } from "./template";
 
 const CANONICAL_ORIGIN = "https://glasspane.page";
 
 export interface Env {
 	SCRIPTS: KVNamespace;
+	ASSETS: Fetcher;
 }
 
 const CORS_HEADERS = {
@@ -16,9 +16,8 @@ const CORS_HEADERS = {
 
 const CSP = [
 	"default-src 'self'",
-	// Build-time SHA-256 hashes cover the two inline <script> blocks (DOMPurify +
-	// main IIFE), removing the need for 'unsafe-inline'.
-	`script-src 'self' ${CSP_SCRIPT_HASHES}`,
+	// 'self' covers the Vite-bundled module scripts and the external fouc.js.
+	"script-src 'self'",
 	"style-src 'self' 'unsafe-inline'",
 	"connect-src 'self'",
 	"img-src 'self' data:",
@@ -34,14 +33,20 @@ const SECURITY_HEADERS = {
 	"Referrer-Policy": "strict-origin-when-cross-origin",
 };
 
-function serveHtml(scriptId: string | null): Response {
-	// Inject the script ID into the data-script-id attribute. The browser reads
-	// this on page load and fetches /script/:id to retrieve the stored content.
-	const html = scriptId
-		? HTML.replace('data-script-id=""', `data-script-id="${scriptId}"`)
-		: HTML;
-
-	return new Response(html, {
+/**
+ * Fetch an HTML asset from Workers Static Assets and attach security headers.
+ * Creates a clean request (no client headers forwarded) to avoid leaking
+ * cookies or other sensitive headers into the internal asset fetch.
+ */
+async function fetchAssetHtml(
+	assetPath: string,
+	request: Request,
+	env: Env,
+): Promise<Response> {
+	const assetRequest = new Request(new URL(assetPath, request.url).toString());
+	const asset = await env.ASSETS.fetch(assetRequest);
+	return new Response(asset.body, {
+		status: asset.status,
 		headers: {
 			"Content-Type": "text/html; charset=utf-8",
 			...SECURITY_HEADERS,
@@ -140,38 +145,46 @@ export default {
 			return await handleGetScript(scriptMatch[1], env);
 		}
 
+		// Shared script link: inject the script ID as a meta tag so the app
+		// fetches the stored content on mount without a full-page redirect.
 		const shareMatch = pathname.match(SHARE_PATH_RE);
 		if (method === "GET" && shareMatch) {
-			return serveHtml(shareMatch[1]);
+			const id = shareMatch[1];
+			const htmlResponse = await fetchAssetHtml(
+				"/teleprompter.html",
+				request,
+				env,
+			);
+			return new HTMLRewriter()
+				.on("head", {
+					element(el) {
+						el.append(`<meta name="script-id" content="${id}">`, {
+							html: true,
+						});
+					},
+				})
+				.transform(htmlResponse);
 		}
 
+		// Root and /index.html both serve the teleprompter app.
 		if (method === "GET" && (pathname === "/" || pathname === "/index.html")) {
-			return serveHtml(null);
+			return fetchAssetHtml("/teleprompter.html", request, env);
 		}
 
-		if (method === "GET" && pathname === "/scripts/jfk-inaugural.md") {
-			return new Response(DEMO_SCRIPT, {
-				headers: {
-					"Content-Type": "text/plain; charset=utf-8",
-					...CORS_HEADERS,
-				},
-			});
-		}
-
+		// Guide page.
 		if (method === "GET" && pathname === "/guide") {
-			return new Response(GUIDE_HTML, {
-				headers: {
-					"Content-Type": "text/html; charset=utf-8",
-					...SECURITY_HEADERS,
-				},
-			});
+			return fetchAssetHtml("/guide.html", request, env);
 		}
 
-		// Silence the browser's automatic favicon request
-		if (method === "GET" && pathname === "/favicon.ico") {
-			return new Response(null, { status: 204 });
-		}
-
-		return new Response("Not found", { status: 404 });
+		// All remaining requests (static assets, /scripts/*, /assets/*, etc.)
+		// are served from Workers Static Assets with security headers applied.
+		const assetRes = await env.ASSETS.fetch(request);
+		return new Response(assetRes.body, {
+			status: assetRes.status,
+			headers: {
+				...Object.fromEntries(assetRes.headers),
+				...SECURITY_HEADERS,
+			},
+		});
 	},
 };

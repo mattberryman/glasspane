@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseScript } from "../src/parser.js";
+import { parseScript } from "../src/parser.ts";
 
 // ---------------------------------------------------------------------------
 // Slide boundaries
@@ -49,13 +49,19 @@ describe("block-level cues", () => {
 		expect(blocks[0]).toMatchObject({ type: "pause" });
 	});
 
-	it("[PAUSE — note text] preserves the note", () => {
+	it("[PAUSE — note text] preserves the full cue", () => {
 		const input = `## S\n\n[PAUSE — let this land. 4 seconds.]`;
 		const blocks = parseScript(input)[0].blocks;
 		expect(blocks[0]).toMatchObject({
 			type: "pause",
-			note: "— let this land. 4 seconds.",
+			cue: "PAUSE — let this land. 4 seconds.",
 		});
+	});
+
+	it("[LOOK UP] preserves the full cue text", () => {
+		const input = `## S\n\n[LOOK UP]`;
+		const blocks = parseScript(input)[0].blocks;
+		expect(blocks[0]).toMatchObject({ type: "pause", cue: "LOOK UP" });
 	});
 
 	it("[NOTE — text] becomes a note block", () => {

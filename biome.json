@@ -4,7 +4,6 @@
     "includes": [
       "src/**",
       "tests/**",
-      "scripts/**",
       "worker/src/**",
       "worker/tests/**",
       "!!worker/src/template.ts",
@@ -72,22 +71,7 @@
       }
     }
   },
-  "overrides": [
-    {
-      "includes": ["scripts/**"],
-      "linter": {
-        "rules": {
-          "suspicious": {
-            "noConsole": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": ["src/app.js"],
-      "linter": { "enabled": false }
-    }
-  ],
+  "overrides": [],
   "javascript": {
     "globals": ["DOMPurify", "DocumentFragment"]
   }

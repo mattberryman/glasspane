@@ -1,14 +1,11 @@
-/**
- * parseScript
- * @param {string} text - raw .md file content
- * @returns {{ title: string, blocks: Array }[]}
- */
+import type { Block, Slide } from "./types.js";
+
 const BLOCK_CUE_RE = /^\[([A-Z][A-Z ]*(?:[\u2014\-.,!?\s].*)?)\]$/;
 
-export function parseScript(text) {
+export function parseScript(text: string): Slide[] {
 	const lines = text.split("\n");
-	const slides = [];
-	let current = { title: "", blocks: [] };
+	const slides: Slide[] = [];
+	let current: Slide = { title: "", blocks: [] };
 
 	for (const raw of lines) {
 		const line = raw.trim();
@@ -27,21 +24,19 @@ export function parseScript(text) {
 		}
 
 		// Block-level cue: line is *only* [TAG optional note]
-		// The tag must begin with an uppercase word. After the all-caps keyword(s)
-		// the rest is free-form note text (may include lowercase, punctuation, etc.).
 		const blockMatch = line.match(BLOCK_CUE_RE);
 		if (blockMatch) {
 			const tag = blockMatch[1].trim();
+			let block: Block;
 			if (tag === "CLICK") {
-				current.blocks.push({ type: "click" });
+				block = { type: "click" };
 			} else if (tag.startsWith("NOTE")) {
-				current.blocks.push({ type: "note", text: tag.slice(4).trim() });
+				block = { type: "note", text: tag.slice(4).trim() };
 			} else {
-				// PAUSE, LOOK UP, SMILE, and any other all-caps cue
-				const spaceIdx = tag.indexOf(" ");
-				const note = spaceIdx >= 0 ? tag.slice(spaceIdx).trim() : "";
-				current.blocks.push({ type: "pause", note });
+				// PAUSE, LOOK UP, SMILE, and any other all-caps cue — preserve original text
+				block = { type: "pause", cue: tag };
 			}
+			current.blocks.push(block);
 			continue;
 		}
 
@@ -57,10 +52,8 @@ export function parseScript(text) {
  * processInline — converts a plain text line to safe HTML.
  * Escapes HTML entities first, then applies markup.
  * The result must still pass through DOMPurify before DOM insertion.
- * @param {string} text
- * @returns {string}
  */
-function processInline(text) {
+function processInline(text: string): string {
 	// 1. Escape HTML entities to prevent injection
 	let html = text
 		.replace(/&/g, "&amp;")
