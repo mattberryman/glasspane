@@ -75,7 +75,7 @@ test("demo link loads JFK inaugural; drop zone hides; teleprompter shows", async
 // 1a. Default theme
 // ─────────────────────────────────────────────────────────────────────────────
 
-test("default theme is \"night\" on first load (no localStorage)", async ({
+test('default theme is "night" on first load (no localStorage)', async ({
 	page,
 }) => {
 	// Fresh context has no localStorage — fouc.js should apply "night" synchronously

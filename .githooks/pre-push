@@ -1,0 +1,6 @@
+#!/bin/sh
+# Run Biome lint before every push. Stops the push if any errors are found.
+# Install once: npm install (the prepare script sets core.hooksPath = .githooks)
+set -e
+echo "Running lint before push..."
+npm run lint
