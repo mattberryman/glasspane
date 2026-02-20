@@ -41,11 +41,12 @@ async function loadDemo(page: Page) {
 	await expect(page.locator("#teleprompter")).toBeVisible({ timeout: 5_000 });
 }
 
-// ── Clear localStorage before each test so theme/accent don't bleed ──────────
+// ── Navigate to the app before each test ──────────────────────────────────────
+// Each Playwright test runs in its own fresh browser context, so localStorage
+// is already clean — no manual clearing needed.
 
 test.beforeEach(async ({ page }) => {
 	await gotoApp(page);
-	await page.evaluate(() => localStorage.clear());
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -101,8 +102,8 @@ test("j key highlights first line; k key moves back; progress bar grows", async 
 	const widthAfterK = await page
 		.locator("#progressFill")
 		.evaluate((el) => (el as HTMLElement).style.width);
-	// After k, width should be ≤ width after second j (back one step)
-	expect(parseFloat(widthAfterK)).toBeLessThanOrEqual(parseFloat(width));
+	// After k, width should be strictly less than after second j (back one step)
+	expect(parseFloat(widthAfterK)).toBeLessThan(parseFloat(width));
 	await expect(firstLineActive).toBeVisible();
 });
 

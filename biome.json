@@ -71,18 +71,7 @@
       }
     }
   },
-  "overrides": [
-    {
-      "includes": ["scripts/**"],
-      "linter": {
-        "rules": {
-          "suspicious": {
-            "noConsole": "off"
-          }
-        }
-      }
-    }
-  ],
+  "overrides": [],
   "javascript": {
     "globals": ["DOMPurify", "DocumentFragment"]
   }
