@@ -1,111 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="night" data-accent="gold">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Glasspane</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙</text></svg>">
-<style><!-- INJECT:CSS --></style>
-</head>
-<body data-script-id="">
-
-<!-- ============================================================
-     DROP ZONE — initial screen
-     ============================================================ -->
-<div id="drop-zone">
-  <div class="wordmark">
-    Glasspane
-    <span class="wordmark-sub">Browser teleprompter</span>
-  </div>
-
-  <label class="drop-label" for="fileInput">
-    <div id="dropTarget">
-      Drop a .md script here
-      <span class="drop-or">or click to browse</span>
-    </div>
-  </label>
-  <input type="file" id="fileInput" accept=".md,text/markdown">
-
-  <a href="#" id="demoLink">Try the demo</a>
-  <a href="/guide" target="_blank" rel="noopener" id="guideLink">How to write a script →</a>
-</div>
-
-<!-- ============================================================
-     TELEPROMPTER — hidden until a script is loaded
-     ============================================================ -->
-<div id="teleprompter" style="display: none">
-
-  <!-- Progress bar -->
-  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-
-  <!-- Green glow bar under progress bar when auto-scrolling -->
-  <div class="scroll-border-glow" id="scrollGlow"></div>
-
-  <!-- Timer -->
-  <div class="timer" id="timer" title="Click to start/stop">
-    <span class="timer-label">Timer</span>
-    <span id="timerDisplay">00:00</span>
-  </div>
-
-  <!-- Slide navigation pips (populated dynamically) -->
-  <div class="slide-nav" id="slideNav"></div>
-
-  <!-- Settings button -->
-  <button class="settings-btn" id="settingsBtn" title="Settings" aria-label="Settings">&#9881;</button>
-
-  <!-- Settings panel -->
-  <div class="settings-panel" id="settingsPanel">
-    <div class="settings-group">
-      <div class="settings-group-label">Theme</div>
-      <label><input type="radio" name="theme" value="night"> Night</label>
-      <label><input type="radio" name="theme" value="navy"> Navy</label>
-      <label><input type="radio" name="theme" value="day"> Day</label>
-      <label><input type="radio" name="theme" value="auto"> Auto</label>
-    </div>
-    <div class="settings-group">
-      <div class="settings-group-label">Accent</div>
-      <label><input type="radio" name="accent" value="gold"> Gold</label>
-      <label><input type="radio" name="accent" value="teal"> Teal</label>
-    </div>
-    <button id="loadNewBtn">Load new script</button>
-  </div>
-
-  <!-- Auto-scroll indicator -->
-  <div class="scroll-indicator" id="scrollIndicator">
-    <span class="scroll-label">Auto &#9654;</span>
-    <span class="scroll-dots" id="scrollDots">
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-    </span>
-    <span class="scroll-speed-name" id="scrollSpeedName">3</span>
-    <span class="scroll-hint">&#8593;&#8595; speed &middot; click to stop</span>
-  </div>
-
-  <!-- Main content -->
-  <div class="container" id="mainContainer">
-    <div class="hint">
-      <kbd>&#8595;</kbd> start auto-scroll &nbsp;&middot;&nbsp; click anywhere to stop &nbsp;&middot;&nbsp; <kbd>&#8593;</kbd><kbd>&#8595;</kbd> adjust speed while scrolling
-      <span class="hint-divider"></span>
-      <kbd>j</kbd><kbd>k</kbd> move highlight &nbsp;&middot;&nbsp; Click paragraph to mark place &nbsp;&middot;&nbsp; Click timer to start/stop
-    </div>
-    <div id="scriptContent"></div>
-  </div>
-
-</div>
-
-<!-- INJECT:DOMPURIFY -->
-
-<script>
-(function() {
-  'use strict';
-<!-- INJECT:APP -->
-})();
-</script>
-
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Glasspane</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙</text></svg>"
+    />
+  </head>
+  <body>
+    <script type="module" src="./main.tsx"></script>
+  </body>
 </html>

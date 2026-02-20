@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseScript } from "../src/parser.js";
+import { parseScript } from "../src/parser.ts";
 
 // ---------------------------------------------------------------------------
 // Slide boundaries
