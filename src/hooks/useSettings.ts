@@ -17,14 +17,17 @@ const ACCENT_HEX: Record<Accent, string> = {
 	teal: "#3dbfa8",
 };
 
+function resolveTheme(t: Theme): "night" | "navy" | "day" {
+	if (t !== "auto") {
+		return t;
+	}
+	return window.matchMedia("(prefers-color-scheme: dark)").matches
+		? "night"
+		: "day";
+}
+
 function updateFavicon(t: Theme, a: Accent): void {
-	const resolved =
-		t === "auto"
-			? window.matchMedia("(prefers-color-scheme: dark)").matches
-				? "night"
-				: "day"
-			: t;
-	const { border, line } = FAVICON_PARAMS[resolved];
+	const { border, line } = FAVICON_PARAMS[resolveTheme(t)];
 	const accentHex = ACCENT_HEX[a];
 	const svg =
 		`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>` +
