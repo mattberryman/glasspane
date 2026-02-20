@@ -8,15 +8,10 @@
       rel="icon"
       href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙</text></svg>"
     />
-    <!-- Apply saved theme/accent synchronously before first paint to prevent flash -->
-    <script>
-      (function () {
-        var t = localStorage.getItem("gp-theme");
-        var a = localStorage.getItem("gp-accent");
-        if (t) document.documentElement.dataset.theme = t;
-        if (a) document.documentElement.dataset.accent = a;
-      })();
-    </script>
+    <!-- Apply saved theme/accent synchronously before first paint to prevent flash.
+         Loaded without defer/async so it runs before any content is rendered.
+         Covered by script-src 'self' — no inline hash needed. -->
+    <script src="./fouc.js"></script>
   </head>
   <body>
     <div id="app"></div>

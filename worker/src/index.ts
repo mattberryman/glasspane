@@ -3,11 +3,6 @@ import { UploadSchema } from "./schema";
 
 const CANONICAL_ORIGIN = "https://glasspane.page";
 
-// SHA-256 hash of the inline FOUC-prevention script in teleprompter.html.
-// Update this if the inline <script> content ever changes.
-const FOUC_SCRIPT_HASH =
-	"'sha256-GCxp9ZrwC6FTkenz2ypBB3k7iR3kmEvswmdhCYq2Ym4='";
-
 export interface Env {
 	SCRIPTS: KVNamespace;
 	ASSETS: Fetcher;
@@ -21,8 +16,8 @@ const CORS_HEADERS = {
 
 const CSP = [
 	"default-src 'self'",
-	// 'self' covers the Vite-bundled module scripts; hash covers the inline FOUC script.
-	`script-src 'self' ${FOUC_SCRIPT_HASH}`,
+	// 'self' covers the Vite-bundled module scripts and the external fouc.js.
+	"script-src 'self'",
 	"style-src 'self' 'unsafe-inline'",
 	"connect-src 'self'",
 	"img-src 'self' data:",
@@ -39,17 +34,19 @@ const SECURITY_HEADERS = {
 };
 
 /**
- * Fetch teleprompter.html from Workers Static Assets and attach security
- * headers. All HTML delivery goes through this function so that headers are
- * applied consistently whether the request is for the root page or a shared
- * script link.
+ * Fetch an HTML asset from Workers Static Assets and attach security headers.
+ * Creates a clean request (no client headers forwarded) to avoid leaking
+ * cookies or other sensitive headers into the internal asset fetch.
  */
-async function fetchHtml(request: Request, env: Env): Promise<Response> {
-	const htmlRequest = new Request(
-		new URL("/teleprompter.html", request.url),
-		request,
+async function fetchAssetHtml(
+	assetPath: string,
+	request: Request,
+	env: Env,
+): Promise<Response> {
+	const assetRequest = new Request(
+		new URL(assetPath, request.url).toString(),
 	);
-	const asset = await env.ASSETS.fetch(htmlRequest);
+	const asset = await env.ASSETS.fetch(assetRequest);
 	return new Response(asset.body, {
 		status: asset.status,
 		headers: {
@@ -155,7 +152,11 @@ export default {
 		const shareMatch = pathname.match(SHARE_PATH_RE);
 		if (method === "GET" && shareMatch) {
 			const id = shareMatch[1];
-			const htmlResponse = await fetchHtml(request, env);
+			const htmlResponse = await fetchAssetHtml(
+				"/teleprompter.html",
+				request,
+				env,
+			);
 			return new HTMLRewriter()
 				.on("head", {
 					element(el) {
@@ -170,11 +171,23 @@ export default {
 
 		// Root and /index.html both serve the teleprompter app.
 		if (method === "GET" && (pathname === "/" || pathname === "/index.html")) {
-			return fetchHtml(request, env);
+			return fetchAssetHtml("/teleprompter.html", request, env);
+		}
+
+		// Guide page.
+		if (method === "GET" && pathname === "/guide") {
+			return fetchAssetHtml("/guide.html", request, env);
 		}
 
 		// All remaining requests (static assets, /scripts/*, /assets/*, etc.)
-		// are served directly from Workers Static Assets.
-		return env.ASSETS.fetch(request);
+		// are served from Workers Static Assets with security headers applied.
+		const assetRes = await env.ASSETS.fetch(request);
+		return new Response(assetRes.body, {
+			status: assetRes.status,
+			headers: {
+				...Object.fromEntries(assetRes.headers),
+				...SECURITY_HEADERS,
+			},
+		});
 	},
 };
