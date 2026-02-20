@@ -10,7 +10,8 @@
     "build": "vite build",
     "dev": "vite dev",
     "typecheck": "tsc --noEmit",
-    "lint": "biome check src tests scripts worker/src worker/tests"
+    "lint": "biome check src tests scripts worker/src worker/tests",
+    "prepare": "git config core.hooksPath .githooks"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.2",

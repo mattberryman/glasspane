@@ -26,8 +26,28 @@ const CSP = [
 	"frame-ancestors 'none'",
 ].join("; ");
 
+// Deny every browser feature the teleprompter does not use.
+const PERMISSIONS_POLICY = [
+	"accelerometer=()",
+	"autoplay=()",
+	"camera=()",
+	"display-capture=()",
+	"encrypted-media=()",
+	"fullscreen=(self)", // user may go fullscreen to read their script
+	"geolocation=()",
+	"gyroscope=()",
+	"magnetometer=()",
+	"microphone=()",
+	"midi=()",
+	"payment=()",
+	"picture-in-picture=()",
+	"usb=()",
+	"xr-spatial-tracking=()",
+].join(", ");
+
 const SECURITY_HEADERS = {
 	"Content-Security-Policy": CSP,
+	"Permissions-Policy": PERMISSIONS_POLICY,
 	"X-Content-Type-Options": "nosniff",
 	"X-Frame-Options": "DENY",
 	"Referrer-Policy": "strict-origin-when-cross-origin",

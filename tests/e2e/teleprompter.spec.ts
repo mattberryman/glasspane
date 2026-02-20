@@ -20,7 +20,7 @@ const JFK_CONTENT = readFileSync(
 	"utf-8",
 );
 
-const APP_URL = "/dist/teleprompter.html";
+const APP_URL = "/teleprompter.html";
 
 // Top-level regex constants (avoid re-creating regexes inside test closures)
 const RE_VISIBLE = /visible/;
@@ -69,6 +69,20 @@ test("demo link loads JFK inaugural; drop zone hides; teleprompter shows", async
 	await expect(page.locator("#teleprompter")).toBeVisible();
 	// At least one text line should be rendered
 	await expect(page.locator(".line").first()).toBeVisible();
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 1a. Default theme
+// ─────────────────────────────────────────────────────────────────────────────
+
+test('default theme is "night" on first load (no localStorage)', async ({
+	page,
+}) => {
+	// Fresh context has no localStorage — fouc.js should apply "night" synchronously
+	const theme = await page.evaluate(
+		() => document.documentElement.dataset.theme,
+	);
+	expect(theme).toBe("night");
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -352,4 +366,47 @@ test("page with script-id auto-fetches and loads the shared script", async ({
 	// Teleprompter should load automatically without any user action
 	await expect(page.locator("#teleprompter")).toBeVisible({ timeout: 5_000 });
 	await expect(page.locator(".line").first()).toBeVisible();
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 11. Click-to-stop scroll
+// ─────────────────────────────────────────────────────────────────────────────
+
+test("clicking anywhere while scrolling stops the scroll", async ({ page }) => {
+	await loadDemo(page);
+
+	// Start scroll
+	await page.keyboard.press("ArrowDown");
+	await expect(page.locator("#scrollIndicator")).toHaveClass(RE_VISIBLE, {
+		timeout: 2_000,
+	});
+
+	// Click anywhere on the page body
+	await page.click("body");
+
+	// Scroll must stop
+	await expect(page.locator("#scrollIndicator")).not.toHaveClass(RE_VISIBLE, {
+		timeout: 2_000,
+	});
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 12. Hero section
+// ─────────────────────────────────────────────────────────────────────────────
+
+test("homepage hero shows headline and three feature callouts", async ({
+	page,
+}) => {
+	// Headline visible before any interaction
+	await expect(page.locator(".hero-headline")).toBeVisible();
+	await expect(page.locator(".hero-headline")).toContainText(
+		"Read to the room.",
+	);
+
+	// All three feature bullets present
+	const features = page.locator(".hero-features li");
+	await expect(features).toHaveCount(3);
+	await expect(features.nth(0)).toContainText("Script stays local");
+	await expect(features.nth(1)).toContainText("Keyboard-driven");
+	await expect(features.nth(2)).toContainText("Optional sharing");
 });

@@ -74,7 +74,17 @@ export function useKeyboard() {
 			}
 		}
 
+		function onAnyClick() {
+			if (scrollActive.value) {
+				scrollActive.value = false;
+			}
+		}
+
 		document.addEventListener("keydown", onKeyDown);
-		return () => document.removeEventListener("keydown", onKeyDown);
+		document.addEventListener("click", onAnyClick);
+		return () => {
+			document.removeEventListener("keydown", onKeyDown);
+			document.removeEventListener("click", onAnyClick);
+		};
 	}, []);
 }

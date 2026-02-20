@@ -169,14 +169,48 @@ body {
 	text-transform: uppercase;
 }
 
-.wordmark-sub {
-	display: block;
-	font-size: 13px;
-	font-weight: 400;
-	letter-spacing: 0.04em;
+.hero {
+	text-align: center;
+	max-width: 360px;
+	width: 100%;
+}
+
+.hero-headline {
+	font-size: 22px;
+	font-weight: 600;
+	color: var(--text);
+	margin: 20px 0 0;
+	letter-spacing: 0.01em;
+}
+
+.hero-sub {
+	font-size: 14px;
 	color: var(--text-dim);
-	text-transform: none;
-	margin-top: 4px;
+	line-height: 1.65;
+	margin: 10px 0 0;
+}
+
+.hero-features {
+	list-style: none;
+	margin: 20px 0 0;
+	padding: 0;
+	text-align: left;
+}
+
+.hero-features li {
+	font-size: 13px;
+	color: var(--text-dim);
+	line-height: 1.55;
+	padding: 5px 0;
+	padding-left: 18px;
+	position: relative;
+}
+
+.hero-features li::before {
+	content: "●";
+	color: var(--accent);
+	position: absolute;
+	left: 0;
 }
 
 #dropTarget {
@@ -221,6 +255,11 @@ body {
 }
 
 #demoLink {
+	background: none;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+	font-family: inherit;
 	color: var(--accent);
 	font-size: 14px;
 	text-decoration: none;

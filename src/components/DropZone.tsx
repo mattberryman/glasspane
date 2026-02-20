@@ -57,10 +57,28 @@ export function DropZone() {
 
 	return (
 		<div id="drop-zone">
-			<div class="wordmark">
-				Glasspane
-				<span class="wordmark-sub">Browser teleprompter</span>
-			</div>
+			<header class="hero">
+				<div class="wordmark">Glasspane</div>
+				<h1 class="hero-headline">Read to the room.</h1>
+				<p class="hero-sub">
+					A browser teleprompter built for professionals. No account. No cloud
+					sync. No distractions.
+				</p>
+				<ul class="hero-features">
+					<li>
+						<strong>Script stays local</strong> — your file is read in-browser;
+						nothing is uploaded unless you choose to share it.
+					</li>
+					<li>
+						<strong>Keyboard-driven</strong> — j/k to advance line by line;
+						arrows to control scroll speed.
+					</li>
+					<li>
+						<strong>Optional sharing</strong> — generate a link; your
+						co-presenter opens it and the script loads automatically.
+					</li>
+				</ul>
+			</header>
 			<label class="drop-label" for="fileInput">
 				{/* biome-ignore lint/a11y/noStaticElementInteractions: drag-and-drop target; keyboard users use the file input instead */}
 				<div
