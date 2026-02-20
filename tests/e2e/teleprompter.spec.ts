@@ -369,7 +369,29 @@ test("page with script-id auto-fetches and loads the shared script", async ({
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 11. Hero section
+// 11. Click-to-stop scroll
+// ─────────────────────────────────────────────────────────────────────────────
+
+test("clicking anywhere while scrolling stops the scroll", async ({ page }) => {
+	await loadDemo(page);
+
+	// Start scroll
+	await page.keyboard.press("ArrowDown");
+	await expect(page.locator("#scrollIndicator")).toHaveClass(RE_VISIBLE, {
+		timeout: 2_000,
+	});
+
+	// Click anywhere on the page body
+	await page.click("body");
+
+	// Scroll must stop
+	await expect(page.locator("#scrollIndicator")).not.toHaveClass(RE_VISIBLE, {
+		timeout: 2_000,
+	});
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 12. Hero section
 // ─────────────────────────────────────────────────────────────────────────────
 
 test("homepage hero shows headline and three feature callouts", async ({
