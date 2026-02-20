@@ -51,9 +51,8 @@ export function DropZone() {
 				return r.text();
 			})
 			.then(loadText)
-			.catch((err: Error) => {
-				// biome-ignore lint/suspicious/noConsole: legitimate error reporting to the browser console
-				console.error("Could not load demo:", err.message);
+			.catch(() => {
+				// demo fetch failed — nothing to display; user can drop a file instead
 			});
 	}
 
