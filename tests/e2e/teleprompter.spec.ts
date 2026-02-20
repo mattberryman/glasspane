@@ -20,7 +20,7 @@ const JFK_CONTENT = readFileSync(
 	"utf-8",
 );
 
-const APP_URL = "/dist/teleprompter.html";
+const APP_URL = "/teleprompter.html";
 
 // Top-level regex constants (avoid re-creating regexes inside test closures)
 const RE_VISIBLE = /visible/;

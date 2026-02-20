@@ -16,7 +16,7 @@ export default defineConfig({
 		},
 	],
 	webServer: {
-		command: "npx serve -l 5556 --no-port-switching .",
+		command: "npx serve -l 5556 --no-port-switching dist",
 		url: "http://localhost:5556",
 		reuseExistingServer: !process.env.CI,
 		timeout: 10_000,

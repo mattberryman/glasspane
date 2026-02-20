@@ -4,9 +4,10 @@ import preact from "@preact/preset-vite";
 
 export default defineConfig({
 	plugins: [preact()],
-	// Relative base so asset paths in HTML are ./assets/... rather than /assets/...
-	// This lets dist/teleprompter.html work when served from any subdirectory.
-	base: "./",
+	// Absolute base so asset paths are /assets/... everywhere.
+	// Required for /s/:id shared-link routes: relative ./assets/... would resolve
+	// to /s/assets/... in the browser and 404.
+	base: "/",
 	build: {
 		// Relative to root ("src"), so "../dist" -> repo-root dist/
 		outDir: "../dist",
