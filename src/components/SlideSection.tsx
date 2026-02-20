@@ -1,20 +1,14 @@
 import type { Slide } from "../types.js";
-import { slides } from "../state.js";
 import { Block } from "./Block.js";
 
 interface Props {
 	slide: Slide;
 	index: number;
+	lineOffset: number;
 }
 
-export function SlideSection({ slide, index }: Props) {
-	// Count line blocks in all slides before this one to get offset
-	const offset = slides.value
-		.slice(0, index)
-		.reduce(
-			(acc, s) => acc + s.blocks.filter((b) => b.type === "line").length,
-			0,
-		);
+export function SlideSection({ slide, index, lineOffset }: Props) {
+	const offset = lineOffset;
 
 	let lineCount = 0;
 	return (

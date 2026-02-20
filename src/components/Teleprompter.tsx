@@ -56,9 +56,28 @@ export function Teleprompter() {
 					mark place &nbsp;&middot;&nbsp; Click timer to start/stop
 				</div>
 				<div id="scriptContent">
-					{slides.value.map((slide, i) => (
-						<SlideSection key={i} slide={slide} index={i} />
-					))}
+					{(() => {
+						const allSlides = slides.value;
+						const offsets = allSlides.reduce<number[]>((acc, slide, i) => {
+							const prev =
+								i === 0
+									? 0
+									: acc[i - 1] +
+										allSlides[i - 1].blocks.filter(
+											(b) => b.type === "line",
+										).length;
+							acc.push(prev);
+							return acc;
+						}, []);
+						return allSlides.map((slide, i) => (
+							<SlideSection
+								key={i}
+								slide={slide}
+								index={i}
+								lineOffset={offsets[i]}
+							/>
+						));
+					})()}
 				</div>
 			</div>
 		</div>

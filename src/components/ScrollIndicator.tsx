@@ -26,7 +26,7 @@ export function ScrollIndicator() {
 				))}
 			</span>
 			<span class="scroll-speed-name" id="scrollSpeedName">
-				{SPEED_LEVELS[level - 1].name}
+				{(SPEED_LEVELS[level - 1] ?? SPEED_LEVELS[2]).name}
 			</span>
 			<span class="scroll-hint">&#8593;&#8595; speed &middot; click to stop</span>
 		</div>

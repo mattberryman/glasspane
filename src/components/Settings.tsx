@@ -4,6 +4,7 @@ import {
 	accent,
 	scriptLoaded,
 	scrollActive,
+	scrollLevel,
 	timerRunning,
 	timerElapsed,
 	slides,
@@ -22,6 +23,7 @@ export function Settings() {
 		timerRunning.value = false;
 		timerElapsed.value = 0;
 		activeIndex.value = -1;
+		scrollLevel.value = 3;
 		slides.value = [];
 		settingsOpen.value = false;
 		scriptLoaded.value = false;

@@ -9,7 +9,7 @@ export function useTimer() {
 
 		const dispose = effect(() => {
 			if (timerRunning.value) {
-				const baseElapsed = timerElapsed.value;
+				const baseElapsed = timerElapsed.peek();
 				startTime = Date.now() - baseElapsed;
 				intervalId = setInterval(() => {
 					timerElapsed.value = Date.now() - startTime;

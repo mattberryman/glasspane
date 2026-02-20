@@ -1,3 +1,4 @@
+import { batch } from "@preact/signals";
 import { timerElapsed, timerRunning } from "../state.js";
 
 export function Timer() {
@@ -13,8 +14,10 @@ export function Timer() {
 
 	function onDblClick(e: MouseEvent) {
 		e.stopPropagation();
-		timerRunning.value = false;
-		timerElapsed.value = 0;
+		batch(() => {
+			timerRunning.value = false;
+			timerElapsed.value = 0;
+		});
 	}
 
 	return (

@@ -50,6 +50,10 @@ export function useAutoScroll() {
 		}
 
 		function startRAF() {
+			if (rafId !== null) {
+				cancelAnimationFrame(rafId);
+				rafId = null;
+			}
 			lastFrameTime = null;
 			accumulator = 0;
 			document.documentElement.style.scrollBehavior = "auto";
