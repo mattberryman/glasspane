@@ -1,0 +1,42 @@
+import DOMPurify from "dompurify";
+import { activeIndex } from "../state.js";
+import type { Block as BlockType } from "../types.js";
+
+interface Props {
+	block: BlockType;
+	lineIndex?: number; // only set for "line" type blocks
+}
+
+export function Block({ block, lineIndex }: Props) {
+	if (block.type === "click") {
+		return <div class="d-click">CLICK</div>;
+	}
+	if (block.type === "pause") {
+		const text = `[PAUSE${block.note ? ` ${block.note}` : ""}]`;
+		return <div class="d-pause">{text}</div>;
+	}
+	if (block.type === "note") {
+		const text = `[NOTE${block.text ? ` ${block.text}` : ""}]`;
+		return <div class="d-note">{text}</div>;
+	}
+	// line type — DOMPurify sanitises content before DOM insertion (defence-in-depth)
+	const clean = DOMPurify.sanitize(block.html, {
+		ALLOWED_TAGS: ["span"],
+		ALLOWED_ATTR: ["class"],
+	});
+
+	function onClick() {
+		if (lineIndex !== undefined) {
+			activeIndex.value = lineIndex;
+		}
+	}
+
+	return (
+		<div
+			class={`line${activeIndex.value === lineIndex ? " active" : ""}`}
+			onClick={onClick}
+			// biome-ignore lint/security/noDangerouslySetInnerHtml: DOMPurify sanitised
+			dangerouslySetInnerHTML={{ __html: clean }}
+		/>
+	);
+}
