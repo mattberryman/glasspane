@@ -8,7 +8,6 @@ function loadText(text: string) {
 }
 
 export function DropZone() {
-	const inputRef = useRef<HTMLInputElement>(null);
 	const dropTargetRef = useRef<HTMLDivElement>(null);
 
 	function handleFile(file: File) {
@@ -78,7 +77,6 @@ export function DropZone() {
 			<input
 				type="file"
 				id="fileInput"
-				ref={inputRef}
 				accept=".md,text/markdown"
 				onChange={onFileChange}
 			/>

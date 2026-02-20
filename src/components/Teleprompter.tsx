@@ -37,6 +37,17 @@ export function Teleprompter() {
 		return () => document.removeEventListener("click", onDocClick);
 	}, []);
 
+	const allSlides = slides.value;
+	const offsets = allSlides.reduce<number[]>((acc, _slide, i) => {
+		const prev =
+			i === 0
+				? 0
+				: acc[i - 1] +
+					allSlides[i - 1].blocks.filter((b) => b.type === "line").length;
+		acc.push(prev);
+		return acc;
+	}, []);
+
 	return (
 		<div id="teleprompter">
 			<ProgressBar />
@@ -56,27 +67,14 @@ export function Teleprompter() {
 					mark place &nbsp;&middot;&nbsp; Click timer to start/stop
 				</div>
 				<div id="scriptContent">
-					{(() => {
-						const allSlides = slides.value;
-						const offsets = allSlides.reduce<number[]>((acc, _slide, i) => {
-							const prev =
-								i === 0
-									? 0
-									: acc[i - 1] +
-										allSlides[i - 1].blocks.filter((b) => b.type === "line")
-											.length;
-							acc.push(prev);
-							return acc;
-						}, []);
-						return allSlides.map((slide, i) => (
-							<SlideSection
-								key={i}
-								slide={slide}
-								index={i}
-								lineOffset={offsets[i]}
-							/>
-						));
-					})()}
+					{allSlides.map((slide, i) => (
+						<SlideSection
+							key={i}
+							slide={slide}
+							index={i}
+							lineOffset={offsets[i]}
+						/>
+					))}
 				</div>
 			</div>
 		</div>

@@ -19,7 +19,7 @@ export interface ClickBlock {
 
 export interface PauseBlock {
 	type: "pause";
-	note?: string;
+	cue: string; // full original cue text, e.g. "PAUSE", "LOOK UP", "SMILE"
 }
 
 export interface NoteBlock {

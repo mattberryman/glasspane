@@ -8,8 +8,6 @@ interface Props {
 }
 
 export function SlideSection({ slide, index, lineOffset }: Props) {
-	const offset = lineOffset;
-
 	let lineCount = 0;
 	return (
 		<>
@@ -18,7 +16,7 @@ export function SlideSection({ slide, index, lineOffset }: Props) {
 				{slide.title && <div class="slide-header">{slide.title}</div>}
 				{slide.blocks.map((block, i) => {
 					const lineIndex =
-						block.type === "line" ? offset + lineCount++ : undefined;
+						block.type === "line" ? lineOffset + lineCount++ : undefined;
 					return <Block key={i} block={block} lineIndex={lineIndex} />;
 				})}
 			</div>

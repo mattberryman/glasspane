@@ -12,6 +12,18 @@ import {
 } from "../state.js";
 import type { Accent, Theme } from "../types.js";
 
+const THEMES: { value: Theme; label: string }[] = [
+	{ value: "night", label: "Night" },
+	{ value: "navy", label: "Navy" },
+	{ value: "day", label: "Day" },
+	{ value: "auto", label: "Auto" },
+];
+
+const ACCENTS: { value: Accent; label: string }[] = [
+	{ value: "gold", label: "Gold" },
+	{ value: "teal", label: "Teal" },
+];
+
 export function Settings() {
 	function onGearClick(e: MouseEvent) {
 		e.stopPropagation();
@@ -33,18 +45,6 @@ export function Settings() {
 		window.scrollTo(0, 0);
 	}
 
-	const themes: { value: Theme; label: string }[] = [
-		{ value: "night", label: "Night" },
-		{ value: "navy", label: "Navy" },
-		{ value: "day", label: "Day" },
-		{ value: "auto", label: "Auto" },
-	];
-
-	const accents: { value: Accent; label: string }[] = [
-		{ value: "gold", label: "Gold" },
-		{ value: "teal", label: "Teal" },
-	];
-
 	return (
 		<>
 			<button
@@ -63,7 +63,7 @@ export function Settings() {
 			>
 				<div class="settings-group">
 					<div class="settings-group-label">Theme</div>
-					{themes.map(({ value, label }) => (
+					{THEMES.map(({ value, label }) => (
 						<label key={value}>
 							<input
 								type="radio"
@@ -80,7 +80,7 @@ export function Settings() {
 				</div>
 				<div class="settings-group">
 					<div class="settings-group-label">Accent</div>
-					{accents.map(({ value, label }) => (
+					{ACCENTS.map(({ value, label }) => (
 						<label key={value}>
 							<input
 								type="radio"

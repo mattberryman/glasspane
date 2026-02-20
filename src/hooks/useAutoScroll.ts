@@ -1,16 +1,7 @@
 import { effect } from "@preact/signals";
 import { useEffect } from "preact/hooks";
+import { SPEED_LEVELS } from "../constants.js";
 import { scrollActive, scrollLevel } from "../state.js";
-
-const SPEED_LEVELS = [
-	{ px: 12 },
-	{ px: 18 },
-	{ px: 27 },
-	{ px: 40 },
-	{ px: 60 },
-	{ px: 90 },
-	{ px: 135 },
-] as const;
 
 export function useAutoScroll() {
 	useEffect(() => {

@@ -12,8 +12,7 @@ export function Block({ block, lineIndex }: Props) {
 		return <div class="d-click">CLICK</div>;
 	}
 	if (block.type === "pause") {
-		const text = `[PAUSE${block.note ? ` ${block.note}` : ""}]`;
-		return <div class="d-pause">{text}</div>;
+		return <div class="d-pause">[{block.cue}]</div>;
 	}
 	if (block.type === "note") {
 		const text = `[NOTE${block.text ? ` ${block.text}` : ""}]`;

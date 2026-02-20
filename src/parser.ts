@@ -33,10 +33,8 @@ export function parseScript(text: string): Slide[] {
 			} else if (tag.startsWith("NOTE")) {
 				block = { type: "note", text: tag.slice(4).trim() };
 			} else {
-				// PAUSE, LOOK UP, SMILE, and any other all-caps cue
-				const spaceIdx = tag.indexOf(" ");
-				const note = spaceIdx >= 0 ? tag.slice(spaceIdx).trim() : "";
-				block = { type: "pause", note };
+				// PAUSE, LOOK UP, SMILE, and any other all-caps cue — preserve original text
+				block = { type: "pause", cue: tag };
 			}
 			current.blocks.push(block);
 			continue;

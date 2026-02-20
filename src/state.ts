@@ -1,5 +1,5 @@
 import { computed, signal } from "@preact/signals";
-import type { Accent, Block, Slide, Theme } from "./types.js";
+import type { Accent, Slide, Theme } from "./types.js";
 
 export const slides = signal<Slide[]>([]);
 export const activeIndex = signal<number>(-1);
@@ -15,9 +15,8 @@ export const settingsOpen = signal<boolean>(false);
 // Derived — no manual bookkeeping
 export const totalLines = computed(
 	() =>
-		slides.value
-			.flatMap((s) => s.blocks)
-			.filter((b): b is Block & { type: "line" } => b.type === "line").length,
+		slides.value.flatMap((s) => s.blocks).filter((b) => b.type === "line")
+			.length,
 );
 
 export const progress = computed(() => {

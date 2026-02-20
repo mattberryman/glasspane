@@ -63,7 +63,6 @@ export function SlideNav() {
 					key={i}
 					class={`slide-pip${activePip.value === i ? " active" : ""}`}
 					title={slide.title || `Slide ${i + 1}`}
-					data-slide={String(i)}
 					onClick={(e) => onPipClick(e as MouseEvent, i)}
 				/>
 			))}
