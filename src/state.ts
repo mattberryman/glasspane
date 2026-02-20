@@ -19,8 +19,12 @@ export const totalLines = computed(() =>
 		.filter((b): b is Block & { type: "line" } => b.type === "line").length,
 );
 
-export const progress = computed(() =>
-	activeIndex.value < 0
-		? 0
-		: activeIndex.value / Math.max(1, totalLines.value - 1),
-);
+export const progress = computed(() => {
+	if (activeIndex.value < 0 || totalLines.value === 0) {
+		return 0;
+	}
+	if (totalLines.value === 1) {
+		return 1;
+	}
+	return activeIndex.value / (totalLines.value - 1);
+});
