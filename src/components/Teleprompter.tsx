@@ -10,10 +10,8 @@ import { SlideSection } from "./SlideSection.js";
 import { useAutoScroll } from "../hooks/useAutoScroll.js";
 import { useTimer } from "../hooks/useTimer.js";
 import { useKeyboard } from "../hooks/useKeyboard.js";
-import { useSettings } from "../hooks/useSettings.js";
 
 export function Teleprompter() {
-	useSettings();
 	useKeyboard();
 	useAutoScroll();
 	useTimer();

@@ -3,8 +3,12 @@ import { scriptLoaded, slides } from "../state.js";
 import { parseScript } from "../parser.js";
 import { DropZone } from "./DropZone.js";
 import { Teleprompter } from "./Teleprompter.js";
+import { useSettings } from "../hooks/useSettings.js";
 
 export function App() {
+	// Run at app level so theme/accent persist across DropZone ↔ Teleprompter transitions
+	useSettings();
+
 	// On mount: check for shared script via meta[name="script-id"]
 	useEffect(() => {
 		const id = document.head

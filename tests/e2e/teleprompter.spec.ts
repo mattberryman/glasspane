@@ -289,6 +289,15 @@ test("load new script button returns to drop zone and resets progress bar", asyn
 }) => {
 	await loadDemo(page);
 
+	// Advance progress by pressing j twice (activeIndex=0 gives 0%; need activeIndex=1)
+	await page.keyboard.press("j");
+	await page.keyboard.press("j");
+	const widthBefore = await page
+		.locator("#progressFill")
+		.evaluate((el) => (el as HTMLElement).style.width);
+	expect(widthBefore).not.toBe("0%");
+	expect(widthBefore).not.toBe("");
+
 	// Open settings panel to reach Load New Script button
 	await page.locator("#settingsBtn").click();
 	await expect(page.locator("#settingsPanel")).toHaveClass(/visible/);
@@ -299,11 +308,12 @@ test("load new script button returns to drop zone and resets progress bar", asyn
 	await expect(page.locator("#drop-zone")).toBeVisible({ timeout: 2_000 });
 	await expect(page.locator("#teleprompter")).not.toBeVisible();
 
-	// Progress bar reset to 0
-	const width = await page
+	// Reload a new script — progress bar must start at 0% (activeIndex reset)
+	await loadDemo(page);
+	const widthAfter = await page
 		.locator("#progressFill")
 		.evaluate((el) => (el as HTMLElement).style.width);
-	expect(width).toBe("0%");
+	expect(widthAfter).toBe("0%");
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
