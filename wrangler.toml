@@ -8,12 +8,11 @@ routes = [
   { pattern = "www.glasspane.page", custom_domain = true },
 ]
 
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+
 [[kv_namespaces]]
 binding = "SCRIPTS"
 id = "6d1dc2347ad94179b8f5b455d548c651"
 preview_id = "a9870899540f4c99a668e40c93b2cf13"
-
-[[rules]]
-type = "Text"
-globs = ["**/*.html"]
-fallthrough = true

@@ -1,11 +1,16 @@
 import { generateId } from "./id";
 import { UploadSchema } from "./schema";
-import { CSP_SCRIPT_HASHES, DEMO_SCRIPT, GUIDE_HTML, HTML } from "./template";
 
 const CANONICAL_ORIGIN = "https://glasspane.page";
 
+// SHA-256 hash of the inline FOUC-prevention script in teleprompter.html.
+// Update this if the inline <script> content ever changes.
+const FOUC_SCRIPT_HASH =
+	"'sha256-GCxp9ZrwC6FTkenz2ypBB3k7iR3kmEvswmdhCYq2Ym4='";
+
 export interface Env {
 	SCRIPTS: KVNamespace;
+	ASSETS: Fetcher;
 }
 
 const CORS_HEADERS = {
@@ -16,9 +21,8 @@ const CORS_HEADERS = {
 
 const CSP = [
 	"default-src 'self'",
-	// Build-time SHA-256 hashes cover the two inline <script> blocks (DOMPurify +
-	// main IIFE), removing the need for 'unsafe-inline'.
-	`script-src 'self' ${CSP_SCRIPT_HASHES}`,
+	// 'self' covers the Vite-bundled module scripts; hash covers the inline FOUC script.
+	`script-src 'self' ${FOUC_SCRIPT_HASH}`,
 	"style-src 'self' 'unsafe-inline'",
 	"connect-src 'self'",
 	"img-src 'self' data:",
@@ -34,14 +38,20 @@ const SECURITY_HEADERS = {
 	"Referrer-Policy": "strict-origin-when-cross-origin",
 };
 
-function serveHtml(scriptId: string | null): Response {
-	// Inject the script ID into the data-script-id attribute. The browser reads
-	// this on page load and fetches /script/:id to retrieve the stored content.
-	const html = scriptId
-		? HTML.replace('data-script-id=""', `data-script-id="${scriptId}"`)
-		: HTML;
-
-	return new Response(html, {
+/**
+ * Fetch teleprompter.html from Workers Static Assets and attach security
+ * headers. All HTML delivery goes through this function so that headers are
+ * applied consistently whether the request is for the root page or a shared
+ * script link.
+ */
+async function fetchHtml(request: Request, env: Env): Promise<Response> {
+	const htmlRequest = new Request(
+		new URL("/teleprompter.html", request.url),
+		request,
+	);
+	const asset = await env.ASSETS.fetch(htmlRequest);
+	return new Response(asset.body, {
+		status: asset.status,
 		headers: {
 			"Content-Type": "text/html; charset=utf-8",
 			...SECURITY_HEADERS,
@@ -140,38 +150,31 @@ export default {
 			return await handleGetScript(scriptMatch[1], env);
 		}
 
+		// Shared script link: inject the script ID as a meta tag so the app
+		// fetches the stored content on mount without a full-page redirect.
 		const shareMatch = pathname.match(SHARE_PATH_RE);
 		if (method === "GET" && shareMatch) {
-			return serveHtml(shareMatch[1]);
+			const id = shareMatch[1];
+			const htmlResponse = await fetchHtml(request, env);
+			return new HTMLRewriter()
+				.on("head", {
+					element(el) {
+						el.append(
+							`<meta name="script-id" content="${id}">`,
+							{ html: true },
+						);
+					},
+				})
+				.transform(htmlResponse);
 		}
 
+		// Root and /index.html both serve the teleprompter app.
 		if (method === "GET" && (pathname === "/" || pathname === "/index.html")) {
-			return serveHtml(null);
+			return fetchHtml(request, env);
 		}
 
-		if (method === "GET" && pathname === "/scripts/jfk-inaugural.md") {
-			return new Response(DEMO_SCRIPT, {
-				headers: {
-					"Content-Type": "text/plain; charset=utf-8",
-					...CORS_HEADERS,
-				},
-			});
-		}
-
-		if (method === "GET" && pathname === "/guide") {
-			return new Response(GUIDE_HTML, {
-				headers: {
-					"Content-Type": "text/html; charset=utf-8",
-					...SECURITY_HEADERS,
-				},
-			});
-		}
-
-		// Silence the browser's automatic favicon request
-		if (method === "GET" && pathname === "/favicon.ico") {
-			return new Response(null, { status: 204 });
-		}
-
-		return new Response("Not found", { status: 404 });
+		// All remaining requests (static assets, /scripts/*, /assets/*, etc.)
+		// are served directly from Workers Static Assets.
+		return env.ASSETS.fetch(request);
 	},
 };
