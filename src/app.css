@@ -221,6 +221,11 @@ body {
 }
 
 #demoLink {
+	background: none;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+	font-family: inherit;
 	color: var(--accent);
 	font-size: 14px;
 	text-decoration: none;

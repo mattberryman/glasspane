@@ -72,6 +72,20 @@ test("demo link loads JFK inaugural; drop zone hides; teleprompter shows", async
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
+// 1a. Default theme
+// ─────────────────────────────────────────────────────────────────────────────
+
+test("default theme is \"night\" on first load (no localStorage)", async ({
+	page,
+}) => {
+	// Fresh context has no localStorage — fouc.js should apply "night" synchronously
+	const theme = await page.evaluate(
+		() => document.documentElement.dataset.theme,
+	);
+	expect(theme).toBe("night");
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 // 2. Slide navigation (j / k keys)
 // ─────────────────────────────────────────────────────────────────────────────
 
