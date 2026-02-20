@@ -367,3 +367,24 @@ test("page with script-id auto-fetches and loads the shared script", async ({
 	await expect(page.locator("#teleprompter")).toBeVisible({ timeout: 5_000 });
 	await expect(page.locator(".line").first()).toBeVisible();
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 11. Hero section
+// ─────────────────────────────────────────────────────────────────────────────
+
+test("homepage hero shows headline and three feature callouts", async ({
+	page,
+}) => {
+	// Headline visible before any interaction
+	await expect(page.locator(".hero-headline")).toBeVisible();
+	await expect(page.locator(".hero-headline")).toContainText(
+		"Read to the room.",
+	);
+
+	// All three feature bullets present
+	const features = page.locator(".hero-features li");
+	await expect(features).toHaveCount(3);
+	await expect(features.nth(0)).toContainText("Script stays local");
+	await expect(features.nth(1)).toContainText("Keyboard-driven");
+	await expect(features.nth(2)).toContainText("Optional sharing");
+});
