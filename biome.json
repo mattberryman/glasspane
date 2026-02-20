@@ -4,7 +4,6 @@
     "includes": [
       "src/**",
       "tests/**",
-      "scripts/**",
       "worker/src/**",
       "worker/tests/**",
       "!!worker/src/template.ts",
@@ -82,10 +81,6 @@
           }
         }
       }
-    },
-    {
-      "includes": ["src/app.js"],
-      "linter": { "enabled": false }
     }
   ],
   "javascript": {
