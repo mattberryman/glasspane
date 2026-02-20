@@ -1,13 +1,15 @@
-import { useEffect } from "preact/hooks";
 import { useSignal } from "@preact/signals";
-import { slides, scrollActive, activeIndex } from "../state.js";
+import { useEffect } from "preact/hooks";
+import { activeIndex, scrollActive, slides } from "../state.js";
 
 export function SlideNav() {
 	const activePip = useSignal(0);
 
 	useEffect(() => {
 		const sections = document.querySelectorAll(".slide-section");
-		if (sections.length === 0) return;
+		if (sections.length === 0) {
+			return;
+		}
 
 		const observer = new IntersectionObserver(
 			(entries) => {
@@ -15,20 +17,26 @@ export function SlideNav() {
 					if (entry.isIntersecting) {
 						const id = entry.target.id; // "slide-0", "slide-1", etc.
 						const idx = Number.parseInt(id.replace("slide-", ""), 10);
-						if (!Number.isNaN(idx)) activePip.value = idx;
+						if (!Number.isNaN(idx)) {
+							activePip.value = idx;
+						}
 					}
 				}
 			},
 			{ threshold: 0.3 },
 		);
 
-		for (const s of sections) observer.observe(s);
+		for (const s of sections) {
+			observer.observe(s);
+		}
 		return () => observer.disconnect();
 	}, [slides.value]); // re-run when slides change
 
 	function onPipClick(e: MouseEvent, slideIndex: number) {
 		e.stopPropagation();
-		if (scrollActive.value) scrollActive.value = false;
+		if (scrollActive.value) {
+			scrollActive.value = false;
+		}
 		const section = document.getElementById(`slide-${slideIndex}`);
 		if (section) {
 			section.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -39,7 +47,9 @@ export function SlideNav() {
 				const idx = Array.from(allLineDivs).indexOf(
 					firstLineInSection as HTMLElement,
 				);
-				if (idx >= 0) activeIndex.value = idx;
+				if (idx >= 0) {
+					activeIndex.value = idx;
+				}
 			}
 		}
 	}
@@ -47,6 +57,8 @@ export function SlideNav() {
 	return (
 		<div class="slide-nav" id="slideNav">
 			{slides.value.map((slide, i) => (
+				// biome-ignore lint/a11y/noStaticElementInteractions: pip navigation; global keyboard (j/k) handles arrow-style nav
+				// biome-ignore lint/a11y/useKeyWithClickEvents: pip navigation; global keyboard (j/k) handles arrow-style nav
 				<div
 					key={i}
 					class={`slide-pip${activePip.value === i ? " active" : ""}`}

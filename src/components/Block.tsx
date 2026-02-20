@@ -32,10 +32,11 @@ export function Block({ block, lineIndex }: Props) {
 	}
 
 	return (
+		// biome-ignore lint/a11y/noStaticElementInteractions: keyboard navigation handled globally via useKeyboard (j/k keys)
+		// biome-ignore lint/a11y/useKeyWithClickEvents: keyboard navigation handled globally via useKeyboard (j/k keys)
 		<div
 			class={`line${activeIndex.value === lineIndex ? " active" : ""}`}
 			onClick={onClick}
-			// biome-ignore lint/security/noDangerouslySetInnerHtml: DOMPurify sanitised
 			dangerouslySetInnerHTML={{ __html: clean }}
 		/>
 	);

@@ -13,10 +13,11 @@ export const scriptLoaded = signal<boolean>(false);
 export const settingsOpen = signal<boolean>(false);
 
 // Derived — no manual bookkeeping
-export const totalLines = computed(() =>
-	slides.value
-		.flatMap((s) => s.blocks)
-		.filter((b): b is Block & { type: "line" } => b.type === "line").length,
+export const totalLines = computed(
+	() =>
+		slides.value
+			.flatMap((s) => s.blocks)
+			.filter((b): b is Block & { type: "line" } => b.type === "line").length,
 );
 
 export const progress = computed(() => {

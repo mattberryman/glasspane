@@ -1,6 +1,6 @@
 import { effect } from "@preact/signals";
 import { useEffect } from "preact/hooks";
-import { timerRunning, timerElapsed } from "../state.js";
+import { timerElapsed, timerRunning } from "../state.js";
 
 export function useTimer() {
 	useEffect(() => {
@@ -24,7 +24,9 @@ export function useTimer() {
 
 		return () => {
 			dispose();
-			if (intervalId !== null) clearInterval(intervalId);
+			if (intervalId !== null) {
+				clearInterval(intervalId);
+			}
 		};
 	}, []);
 }

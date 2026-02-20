@@ -1,15 +1,15 @@
 import { useEffect } from "preact/hooks";
+import { useAutoScroll } from "../hooks/useAutoScroll.js";
+import { useKeyboard } from "../hooks/useKeyboard.js";
+import { useTimer } from "../hooks/useTimer.js";
 import { settingsOpen, slides } from "../state.js";
 import { ProgressBar } from "./ProgressBar.js";
 import { ScrollGlow } from "./ScrollGlow.js";
-import { Timer } from "./Timer.js";
-import { SlideNav } from "./SlideNav.js";
-import { Settings } from "./Settings.js";
 import { ScrollIndicator } from "./ScrollIndicator.js";
+import { Settings } from "./Settings.js";
+import { SlideNav } from "./SlideNav.js";
 import { SlideSection } from "./SlideSection.js";
-import { useAutoScroll } from "../hooks/useAutoScroll.js";
-import { useTimer } from "../hooks/useTimer.js";
-import { useKeyboard } from "../hooks/useKeyboard.js";
+import { Timer } from "./Timer.js";
 
 export function Teleprompter() {
 	useKeyboard();
@@ -19,7 +19,9 @@ export function Teleprompter() {
 	// Close settings on outside click
 	useEffect(() => {
 		function onDocClick(e: MouseEvent) {
-			if (!settingsOpen.value) return;
+			if (!settingsOpen.value) {
+				return;
+			}
 			const panel = document.getElementById("settingsPanel");
 			const btn = document.getElementById("settingsBtn");
 			if (
@@ -56,14 +58,13 @@ export function Teleprompter() {
 				<div id="scriptContent">
 					{(() => {
 						const allSlides = slides.value;
-						const offsets = allSlides.reduce<number[]>((acc, slide, i) => {
+						const offsets = allSlides.reduce<number[]>((acc, _slide, i) => {
 							const prev =
 								i === 0
 									? 0
 									: acc[i - 1] +
-										allSlides[i - 1].blocks.filter(
-											(b) => b.type === "line",
-										).length;
+										allSlides[i - 1].blocks.filter((b) => b.type === "line")
+											.length;
 							acc.push(prev);
 							return acc;
 						}, []);

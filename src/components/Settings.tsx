@@ -1,16 +1,16 @@
 import {
-	settingsOpen,
-	theme,
 	accent,
+	activeIndex,
 	scriptLoaded,
 	scrollActive,
 	scrollLevel,
-	timerRunning,
-	timerElapsed,
+	settingsOpen,
 	slides,
-	activeIndex,
+	theme,
+	timerElapsed,
+	timerRunning,
 } from "../state.js";
-import type { Theme, Accent } from "../types.js";
+import type { Accent, Theme } from "../types.js";
 
 export function Settings() {
 	function onGearClick(e: MouseEvent) {
@@ -19,7 +19,9 @@ export function Settings() {
 	}
 
 	function onLoadNew() {
-		if (scrollActive.value) scrollActive.value = false;
+		if (scrollActive.value) {
+			scrollActive.value = false;
+		}
 		timerRunning.value = false;
 		timerElapsed.value = 0;
 		activeIndex.value = -1;

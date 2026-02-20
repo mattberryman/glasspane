@@ -1,7 +1,7 @@
 import { effect } from "@preact/signals";
 import { useEffect } from "preact/hooks";
-import { theme, accent } from "../state.js";
-import type { Theme, Accent } from "../types.js";
+import { accent, theme } from "../state.js";
+import type { Accent, Theme } from "../types.js";
 
 const VALID_THEMES: Theme[] = ["night", "navy", "day", "auto"];
 const VALID_ACCENTS: Accent[] = ["gold", "teal"];

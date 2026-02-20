@@ -1,9 +1,9 @@
 import { useEffect } from "preact/hooks";
-import { scriptLoaded, slides } from "../state.js";
+import { useSettings } from "../hooks/useSettings.js";
 import { parseScript } from "../parser.js";
+import { scriptLoaded, slides } from "../state.js";
 import { DropZone } from "./DropZone.js";
 import { Teleprompter } from "./Teleprompter.js";
-import { useSettings } from "../hooks/useSettings.js";
 
 export function App() {
 	// Run at app level so theme/accent persist across DropZone ↔ Teleprompter transitions
@@ -17,7 +17,9 @@ export function App() {
 		if (id) {
 			fetch(`/script/${id}`)
 				.then((r) => {
-					if (!r.ok) throw new Error("Script not found");
+					if (!r.ok) {
+						throw new Error("Script not found");
+					}
 					return r.text();
 				})
 				.then((text) => {

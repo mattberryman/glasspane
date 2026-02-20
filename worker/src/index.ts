@@ -43,9 +43,7 @@ async function fetchAssetHtml(
 	request: Request,
 	env: Env,
 ): Promise<Response> {
-	const assetRequest = new Request(
-		new URL(assetPath, request.url).toString(),
-	);
+	const assetRequest = new Request(new URL(assetPath, request.url).toString());
 	const asset = await env.ASSETS.fetch(assetRequest);
 	return new Response(asset.body, {
 		status: asset.status,
@@ -160,10 +158,9 @@ export default {
 			return new HTMLRewriter()
 				.on("head", {
 					element(el) {
-						el.append(
-							`<meta name="script-id" content="${id}">`,
-							{ html: true },
-						);
+						el.append(`<meta name="script-id" content="${id}">`, {
+							html: true,
+						});
 					},
 				})
 				.transform(htmlResponse);

@@ -21,6 +21,8 @@ export function Timer() {
 	}
 
 	return (
+		// biome-ignore lint/a11y/noStaticElementInteractions: timer click/dblclick; keyboard users control scroll via arrow keys
+		// biome-ignore lint/a11y/useKeyWithClickEvents: timer click/dblclick; keyboard users control scroll via arrow keys
 		<div
 			class={`timer${timerRunning.value ? " running" : ""}`}
 			id="timer"

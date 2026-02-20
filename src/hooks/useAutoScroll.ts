@@ -19,7 +19,9 @@ export function useAutoScroll() {
 		let accumulator = 0;
 
 		function scrollTick(timestamp: number) {
-			if (!scrollActive.value) return;
+			if (!scrollActive.value) {
+				return;
+			}
 
 			if (lastFrameTime === null) {
 				lastFrameTime = timestamp;
@@ -79,10 +81,14 @@ export function useAutoScroll() {
 
 		// Stop on wheel or blur
 		function onWheel() {
-			if (scrollActive.value) scrollActive.value = false;
+			if (scrollActive.value) {
+				scrollActive.value = false;
+			}
 		}
 		function onBlur() {
-			if (scrollActive.value) scrollActive.value = false;
+			if (scrollActive.value) {
+				scrollActive.value = false;
+			}
 		}
 		window.addEventListener("wheel", onWheel, { passive: true });
 		window.addEventListener("blur", onBlur);

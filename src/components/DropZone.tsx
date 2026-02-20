@@ -30,23 +30,31 @@ export function DropZone() {
 		e.preventDefault();
 		dropTargetRef.current?.classList.remove("drag-over");
 		const file = e.dataTransfer?.files[0];
-		if (file) handleFile(file);
+		if (file) {
+			handleFile(file);
+		}
 	}
 
 	function onFileChange(e: Event) {
 		const file = (e.target as HTMLInputElement).files?.[0];
-		if (file) handleFile(file);
+		if (file) {
+			handleFile(file);
+		}
 	}
 
-	function onDemoClick(e: Event) {
-		e.preventDefault();
+	function onDemoClick() {
 		fetch("./scripts/jfk-inaugural.md")
 			.then((r) => {
-				if (!r.ok) throw new Error(`Demo script not found (${r.status})`);
+				if (!r.ok) {
+					throw new Error(`Demo script not found (${r.status})`);
+				}
 				return r.text();
 			})
 			.then(loadText)
-			.catch((err: Error) => alert(`Could not load demo: ${err.message}`));
+			.catch((err: Error) => {
+				// biome-ignore lint/suspicious/noConsole: legitimate error reporting to the browser console
+				console.error("Could not load demo:", err.message);
+			});
 	}
 
 	return (
@@ -56,6 +64,7 @@ export function DropZone() {
 				<span class="wordmark-sub">Browser teleprompter</span>
 			</div>
 			<label class="drop-label" for="fileInput">
+				{/* biome-ignore lint/a11y/noStaticElementInteractions: drag-and-drop target; keyboard users use the file input instead */}
 				<div
 					id="dropTarget"
 					ref={dropTargetRef}
@@ -74,9 +83,9 @@ export function DropZone() {
 				accept=".md,text/markdown"
 				onChange={onFileChange}
 			/>
-			<a href="#" id="demoLink" onClick={onDemoClick}>
+			<button type="button" id="demoLink" onClick={onDemoClick}>
 				Try the demo
-			</a>
+			</button>
 			<a href="/guide" target="_blank" rel="noopener" id="guideLink">
 				How to write a script
 			</a>

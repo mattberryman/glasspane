@@ -1,8 +1,8 @@
 import { useEffect } from "preact/hooks";
 import {
+	activeIndex,
 	scrollActive,
 	scrollLevel,
-	activeIndex,
 	settingsOpen,
 	totalLines,
 } from "../state.js";
@@ -23,11 +23,13 @@ export function useKeyboard() {
 
 			if (e.key === "ArrowDown") {
 				e.preventDefault();
-				if (!scrollActive.value) {
-					scrollActive.value = true;
-				} else {
+				if (scrollActive.value) {
 					const next = scrollLevel.value + 1;
-					if (next <= 7) scrollLevel.value = next;
+					if (next <= 7) {
+						scrollLevel.value = next;
+					}
+				} else {
+					scrollActive.value = true;
 				}
 				return;
 			}
@@ -36,7 +38,9 @@ export function useKeyboard() {
 				e.preventDefault();
 				if (scrollActive.value) {
 					const prev = scrollLevel.value - 1;
-					if (prev >= 1) scrollLevel.value = prev;
+					if (prev >= 1) {
+						scrollLevel.value = prev;
+					}
 				}
 				return;
 			}

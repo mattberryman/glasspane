@@ -8,10 +8,10 @@
  * intercept fetch requests for demo content and mock shared scripts.
  */
 
-import { test, expect, Page } from "@playwright/test";
-import { readFileSync } from "fs";
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { expect, type Page, test } from "@playwright/test";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "../..");
@@ -21,6 +21,10 @@ const JFK_CONTENT = readFileSync(
 );
 
 const APP_URL = "/dist/teleprompter.html";
+
+// Top-level regex constants (avoid re-creating regexes inside test closures)
+const RE_VISIBLE = /visible/;
+const RE_RUNNING = /running/;
 
 /**
  * Navigate to the app and intercept demo script requests so the
@@ -117,17 +121,17 @@ test("ArrowDown starts auto-scroll and shows indicator; Escape stops it", async 
 	await loadDemo(page);
 
 	// Indicator hidden before scrolling
-	await expect(page.locator("#scrollIndicator")).not.toHaveClass(/visible/);
+	await expect(page.locator("#scrollIndicator")).not.toHaveClass(RE_VISIBLE);
 
 	// ArrowDown → starts scroll
 	await page.keyboard.press("ArrowDown");
-	await expect(page.locator("#scrollIndicator")).toHaveClass(/visible/, {
+	await expect(page.locator("#scrollIndicator")).toHaveClass(RE_VISIBLE, {
 		timeout: 2_000,
 	});
 
 	// Escape → stops scroll
 	await page.keyboard.press("Escape");
-	await expect(page.locator("#scrollIndicator")).not.toHaveClass(/visible/, {
+	await expect(page.locator("#scrollIndicator")).not.toHaveClass(RE_VISIBLE, {
 		timeout: 2_000,
 	});
 });
@@ -143,7 +147,7 @@ test("ArrowDown while scrolling increments speed display from 3 to 4", async ({
 
 	// Start scroll at default level 3
 	await page.keyboard.press("ArrowDown");
-	await expect(page.locator("#scrollIndicator")).toHaveClass(/visible/, {
+	await expect(page.locator("#scrollIndicator")).toHaveClass(RE_VISIBLE, {
 		timeout: 2_000,
 	});
 
@@ -153,8 +157,8 @@ test("ArrowDown while scrolling increments speed display from 3 to 4", async ({
 	// ArrowDown again → increases speed
 	await page.keyboard.press("ArrowDown");
 	const newSpeed = await page.locator("#scrollSpeedName").textContent();
-	expect(parseInt(newSpeed?.trim() ?? "0")).toBeGreaterThan(
-		parseInt(initialSpeed?.trim() ?? "0"),
+	expect(parseInt(newSpeed?.trim() ?? "0", 10)).toBeGreaterThan(
+		parseInt(initialSpeed?.trim() ?? "0", 10),
 	);
 
 	// Stop
@@ -172,11 +176,11 @@ test("click starts timer; click pauses it; double-click resets to 00:00", async 
 
 	// Initial state
 	await expect(page.locator("#timerDisplay")).toHaveText("00:00");
-	await expect(page.locator("#timer")).not.toHaveClass(/running/);
+	await expect(page.locator("#timer")).not.toHaveClass(RE_RUNNING);
 
 	// Single click → starts timer
 	await page.locator("#timer").click();
-	await expect(page.locator("#timer")).toHaveClass(/running/);
+	await expect(page.locator("#timer")).toHaveClass(RE_RUNNING);
 
 	// Wait > 1 second so the display advances to at least 00:01
 	await page.waitForTimeout(1_400);
@@ -185,7 +189,7 @@ test("click starts timer; click pauses it; double-click resets to 00:00", async 
 
 	// Single click → pauses
 	await page.locator("#timer").click();
-	await expect(page.locator("#timer")).not.toHaveClass(/running/);
+	await expect(page.locator("#timer")).not.toHaveClass(RE_RUNNING);
 	const pausedAt = await page.locator("#timerDisplay").textContent();
 	await page.waitForTimeout(400);
 	const afterPause = await page.locator("#timerDisplay").textContent();
@@ -194,7 +198,7 @@ test("click starts timer; click pauses it; double-click resets to 00:00", async 
 	// Double click → resets
 	await page.locator("#timer").dblclick();
 	await expect(page.locator("#timerDisplay")).toHaveText("00:00");
-	await expect(page.locator("#timer")).not.toHaveClass(/running/);
+	await expect(page.locator("#timer")).not.toHaveClass(RE_RUNNING);
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -233,13 +237,11 @@ test('switching to "day" theme persists across page reload', async ({
 
 	// Open settings
 	await page.locator("#settingsBtn").click();
-	await expect(page.locator("#settingsPanel")).toHaveClass(/visible/);
+	await expect(page.locator("#settingsPanel")).toHaveClass(RE_VISIBLE);
 
 	// Select day theme
 	await page.locator('input[name="theme"][value="day"]').check();
-	await expect(
-		page.locator('input[name="theme"][value="day"]'),
-	).toBeChecked();
+	await expect(page.locator('input[name="theme"][value="day"]')).toBeChecked();
 
 	// Reload
 	await page.reload();
@@ -262,7 +264,7 @@ test('switching to "teal" accent persists across page reload', async ({
 
 	// Open settings
 	await page.locator("#settingsBtn").click();
-	await expect(page.locator("#settingsPanel")).toHaveClass(/visible/);
+	await expect(page.locator("#settingsPanel")).toHaveClass(RE_VISIBLE);
 
 	// Select teal accent
 	await page.locator('input[name="accent"][value="teal"]').check();
@@ -300,7 +302,7 @@ test("load new script button returns to drop zone and resets progress bar", asyn
 
 	// Open settings panel to reach Load New Script button
 	await page.locator("#settingsBtn").click();
-	await expect(page.locator("#settingsPanel")).toHaveClass(/visible/);
+	await expect(page.locator("#settingsPanel")).toHaveClass(RE_VISIBLE);
 
 	await page.locator("#loadNewBtn").click();
 
@@ -336,10 +338,7 @@ test("page with script-id auto-fetches and loads the shared script", async ({
 		const response = await route.fetch();
 		let html = await response.text();
 		// v1: body dataset
-		html = html.replace(
-			'data-script-id=""',
-			`data-script-id="${SCRIPT_ID}"`,
-		);
+		html = html.replace('data-script-id=""', `data-script-id="${SCRIPT_ID}"`);
 		// v2: inject meta tag into <head>
 		html = html.replace(
 			"</head>",
