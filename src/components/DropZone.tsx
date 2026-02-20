@@ -1,6 +1,7 @@
 import { useRef } from "preact/hooks";
 import { parseScript } from "../parser.js";
 import { scriptLoaded, slides } from "../state.js";
+import { GlasspaneIcon } from "./Icon.js";
 
 function loadText(text: string) {
 	slides.value = parseScript(text);
@@ -58,6 +59,7 @@ export function DropZone() {
 	return (
 		<div id="drop-zone">
 			<header class="hero">
+				<GlasspaneIcon />
 				<div class="wordmark">Glasspane</div>
 				<h1 class="hero-headline">Read to the room.</h1>
 				<p class="hero-sub">
