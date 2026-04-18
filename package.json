@@ -29,7 +29,7 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
-    "@preact/signals": "^2.8.1",
-    "preact": "^10.28.4"
+    "@preact/signals": "^2.9.0",
+    "preact": "^10.29.1"
   }
 }

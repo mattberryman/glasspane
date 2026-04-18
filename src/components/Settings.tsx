@@ -11,6 +11,7 @@ import {
 	timerRunning,
 } from "../state.js";
 import type { Accent, Theme } from "../types.js";
+import { SettingsIcon } from "./Icon.js";
 
 const THEMES: { value: Theme; label: string }[] = [
 	{ value: "night", label: "Night" },
@@ -52,14 +53,18 @@ export function Settings() {
 				id="settingsBtn"
 				title="Settings"
 				aria-label="Settings"
+				aria-expanded={settingsOpen.value}
+				aria-controls="settingsPanel"
 				onClick={onGearClick}
 				type="button"
 			>
-				&#9881;
+				<SettingsIcon />
 			</button>
 			<div
 				class={`settings-panel${settingsOpen.value ? " visible" : ""}`}
 				id="settingsPanel"
+				role="dialog"
+				aria-label="Settings"
 			>
 				<div class="settings-group">
 					<div class="settings-group-label">Theme</div>
