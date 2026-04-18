@@ -19,6 +19,8 @@
 	--timer-bg: rgba(12, 12, 14, 0.85);
 	--settings-bg: rgba(16, 16, 20, 0.96);
 	--settings-border: #333;
+	--line-hover-bg: rgba(255, 255, 255, 0.03);
+	--scrollbar-thumb: #333;
 }
 
 /* Navy */
@@ -38,6 +40,8 @@
 	--timer-bg: rgba(10, 15, 30, 0.85);
 	--settings-bg: rgba(10, 15, 30, 0.96);
 	--settings-border: #2e3a58;
+	--line-hover-bg: rgba(208, 216, 240, 0.04);
+	--scrollbar-thumb: #2e3a58;
 }
 
 /* Day */
@@ -45,7 +49,7 @@
 	--icon-line: 26, 26, 26;
 	--bg: #f8f7f4;
 	--text: #1a1a1a;
-	--text-dim: #6e6e6e;
+	--text-dim: #5a5a5a;
 	--slide-bg: #eeedea;
 	--progress-bg: #e0dfdc;
 	--hint-bg: #f0efec;
@@ -57,6 +61,8 @@
 	--timer-bg: rgba(248, 247, 244, 0.85);
 	--settings-bg: rgba(248, 247, 244, 0.96);
 	--settings-border: #b0afac;
+	--line-hover-bg: rgba(0, 0, 0, 0.035);
+	--scrollbar-thumb: #b0afac;
 }
 
 /* Auto — follows system preference */
@@ -77,6 +83,8 @@
 		--timer-bg: rgba(12, 12, 14, 0.85);
 		--settings-bg: rgba(16, 16, 20, 0.96);
 		--settings-border: #333;
+		--line-hover-bg: rgba(255, 255, 255, 0.03);
+		--scrollbar-thumb: #333;
 	}
 }
 @media (prefers-color-scheme: light) {
@@ -84,7 +92,7 @@
 		--icon-line: 26, 26, 26;
 		--bg: #f8f7f4;
 		--text: #1a1a1a;
-		--text-dim: #6e6e6e;
+		--text-dim: #5a5a5a;
 		--slide-bg: #eeedea;
 		--progress-bg: #e0dfdc;
 		--hint-bg: #f0efec;
@@ -96,6 +104,8 @@
 		--timer-bg: rgba(248, 247, 244, 0.85);
 		--settings-bg: rgba(248, 247, 244, 0.96);
 		--settings-border: #b0afac;
+		--line-hover-bg: rgba(0, 0, 0, 0.035);
+		--scrollbar-thumb: #b0afac;
 	}
 }
 
@@ -138,7 +148,32 @@
 html {
 	scroll-behavior: smooth;
 	scrollbar-width: thin;
-	scrollbar-color: #333 var(--bg);
+	scrollbar-color: var(--scrollbar-thumb) var(--bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+	*,
+	*::before,
+	*::after {
+		/* biome-ignore lint/complexity/noImportantStyles: reduced-motion override must beat every other transition/animation rule in the cascade */
+		animation-duration: 0.01ms !important;
+		/* biome-ignore lint/complexity/noImportantStyles: reduced-motion override must beat every other transition/animation rule in the cascade */
+		animation-iteration-count: 1 !important;
+		/* biome-ignore lint/complexity/noImportantStyles: reduced-motion override must beat every other transition/animation rule in the cascade */
+		transition-duration: 0.01ms !important;
+	}
+}
+
+:focus:not(:focus-visible) {
+	outline: none;
+}
+:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
+	border-radius: 4px;
 }
 
 body {
@@ -310,7 +345,7 @@ body {
 	height: 100%;
 	background: var(--slide-border);
 	width: 0%;
-	transition: width 0.3s ease;
+	transition: width 0.2s ease-out;
 }
 
 /* ============================================================
@@ -422,7 +457,7 @@ body {
 		border-color 0.15s ease;
 }
 .line:hover {
-	background: rgba(255, 255, 255, 0.02);
+	background: var(--line-hover-bg);
 }
 .line.active {
 	background: var(--highlight);

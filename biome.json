@@ -1,14 +1,12 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.4.2/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.12/schema.json",
   "files": {
     "includes": [
       "src/**",
       "tests/**",
       "worker/src/**",
       "worker/tests/**",
-      "!!worker/src/template.ts",
-      "!!src/teleprompter.html",
-      "!!src/guide.html"
+      "!!src/teleprompter.html"
     ]
   },
   "linter": {

@@ -82,7 +82,7 @@ export function DropZone() {
 				</ul>
 			</header>
 			<label class="drop-label" for="fileInput">
-				{/* biome-ignore lint/a11y/noStaticElementInteractions: drag-and-drop target; keyboard users use the file input instead */}
+				{/* biome-ignore lint/a11y/noStaticElementInteractions: drag-and-drop target; keyboard users activate the file input via the label */}
 				<div
 					id="dropTarget"
 					ref={dropTargetRef}
