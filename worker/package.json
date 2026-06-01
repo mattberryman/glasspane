@@ -13,10 +13,10 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "^0.12.13",
+    "@cloudflare/vitest-pool-workers": "^0.16.11",
     "@cloudflare/workers-types": "^4.0.0",
     "typescript": "^5.0.0",
-    "vitest": "^3.2.4",
+    "vitest": "^4.1.8",
     "wrangler": "^4.66.0"
   },
   "overrides": {
